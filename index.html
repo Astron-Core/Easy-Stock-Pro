@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <base target="_top">
   <meta charset="UTF-8">
-  <title>Easy Stock Online PRO</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Easy Stock Online PRO</title>
+
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
+
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-  
+
   <style>
     :root {
       --primary: #FF4081;     /* สีชมพู MACKAY (ปุ่ม/เมนู Active) */
@@ -23,7 +23,7 @@
       --light: #E0F7FA;       /* สีฟ้าพาสเทล (พื้นหลังหลัก) */
       --white: #FFFDE7;       /* สีครีมอ่อน (พื้นหลังการ์ด/กล่อง) */
     }
-    
+
     * { box-sizing: border-box; font-family: 'JetBrains Mono', monospace; }
     body { margin: 0; padding: 0; background-color: var(--light); color: var(--dark); -webkit-tap-highlight-color: transparent; }
     .screen-container { width: 100vw; height: 100vh; overflow: hidden; position: relative; }
@@ -50,12 +50,12 @@
     .card { background: var(--white); border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 3px solid var(--dark); box-shadow: 4px 4px 0px var(--dark); }
     .btn { padding: 10px 15px; border: 2px solid var(--dark); border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 14px; box-shadow: 3px 3px 0px var(--dark); transition: all 0.1s; }
     .btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px var(--dark); }
-    
+
     .btn-primary { background: var(--primary); color: #FFFFFF; }
     .btn-warning { background: var(--warning); color: var(--dark); }
     .btn-danger { background: var(--danger); color: var(--dark); }
     .btn-success { background: var(--success); color: var(--dark); }
-    
+
     .input-styled { width: 100%; padding: 12px; margin-bottom: 10px; border: 2px solid var(--dark); border-radius: 12px; font-size: 14px; background-color: #FFFFFF; }
     .input-styled:focus { outline: none; border-color: var(--primary); }
 
@@ -72,7 +72,7 @@
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(45,45,45,0.7); z-index: 2000; display: flex; justify-content: center; align-items: center; }
     .modal-content { animation: slideUp 0.3s ease-out; }
     @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    
+
     .numpad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
     .numpad-btn { padding: 15px 0; font-size: 22px; font-weight: bold; border-radius: 12px; background: #FFFFFF; border: 3px solid var(--dark); color: var(--dark); box-shadow: 3px 3px 0px var(--dark); cursor: pointer; transition: all 0.1s; }
     .numpad-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px var(--dark); background: var(--warning); }
@@ -84,7 +84,7 @@
     .user-avatar-img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; cursor: pointer; border: 2px solid var(--dark); background-color: #FFFFFF; }
     .profile-header-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin: 0 auto 10px auto; border: 3px solid var(--dark); display: block; background-color: #FFFFFF; }
     .swal-custom-image { border: 4px solid var(--dark); border-radius: 15px; box-shadow: 6px 6px 0px var(--dark); }
-    
+
     /* --- TOGGLE SWITCH --- */
     .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
     .switch input { opacity: 0; width: 0; height: 0; }
@@ -93,39 +93,33 @@
     input:checked + .slider { background-color: var(--success); }
     input:checked + .slider:before { transform: translateX(24px); }
 
-    /* --- PRINT STYLES --- */
-    #print-sticker-area { display: none; }
+    /* --- PRINT STYLES (legacy #print-area) --- */
     #print-area { display: none; }
     @media print {
-      @page { margin: 0; }
       body * { visibility: hidden; }
-      html, body { width: 100% !important; height: 100vh !important; margin: 0 !important; padding: 0 !important; overflow: hidden !important; background: #fff; }
-      #print-sticker-area { display: flex !important; visibility: visible; position: absolute; left: 0; top: 0; width: 100%; height: 100%; box-sizing: border-box; background: #fff; overflow: hidden !important; }
-      #print-sticker-area * { visibility: visible; }
-      
       #print-area, #print-area * { visibility: visible; }
       #print-area { position: absolute; left: 0; top: 0; width: 100%; display: flex; justify-content: flex-start; align-items: flex-start; }
       .sticker-container { width: 50mm; padding: 5px; border: 1px solid #000; font-family: 'JetBrains Mono', monospace; color: #000; text-align: center; background: #fff; page-break-inside: avoid; }
       .sticker-qr { display: flex; justify-content: center; margin: 5px 0; }
-      .sticker-qr img { width: 80px; height: 80px; } 
+      .sticker-qr img { width: 80px; height: 80px; }
       .sticker-text { font-size: 10px; font-weight: bold; margin: 2px 0; }
+    }
+
+    /* --- PRINT STYLES (sticker area) --- */
+    #print-sticker-area { display: none; }
+    @media print {
+      @page { margin: 0; }
+      html, body { width: 100% !important; height: 100vh !important; margin: 0 !important; padding: 0 !important; overflow: hidden !important; background: #fff; }
+      #print-sticker-area { display: flex !important; visibility: visible; position: absolute; left: 0; top: 0; width: 100%; height: 100%; box-sizing: border-box; background: #fff; overflow: hidden !important; }
+      #print-sticker-area * { visibility: visible; }
     }
   </style>
 </head>
 <body>
 
-  <!-- AREA FOR PRINTING STICKERS -->
   <div id="print-area"></div>
-  <div id="print-sticker-area" style="flex-direction: column; align-items: center; justify-content: space-between; font-family: 'JetBrains Mono', monospace; background: white; text-align: center; padding: 1mm 0;">
-    <div id="print-batch-code" style="font-size: 7.5px; font-weight: bold; line-height: 0.9;"></div>
-    <div id="print-expiry-date" style="font-size: 7.5px; font-weight: bold; line-height: 0.9;"></div>
-    <div id="print-user-name" style="font-size: 7.5px; font-weight: bold; line-height: 0.9;"></div>
-    <img id="print-qr-img" src="" style="width: 1.15cm; height: 1.15cm; object-fit: contain; margin: 0;" />
-    <div id="print-item-code" style="font-size: 8.5px; font-weight: bold; line-height: 0.9;"></div>
-    <div id="print-rcv-date" style="font-size: 7.5px; font-weight: bold; line-height: 0.9;"></div>
-  </div>
 
-  <!-- LOGIN SCREEN -->
+  <!-- ====================== LOGIN ====================== -->
   <div id="login-screen" class="screen-container">
     <div class="login-box">
       <div class="login-logo"><i class="fa-solid fa-boxes-stacked"></i></div>
@@ -136,31 +130,41 @@
     </div>
   </div>
 
-  <!-- APP MAIN SCREEN -->
+  <!-- ====================== APP ====================== -->
   <div id="app-screen" class="screen-container" style="display:none;">
-    
-    <!-- SUBPAGE: STOCK -->
+
+    <!-- ============ PAGE: STOCK ============ -->
     <div id="page-stock" class="page-content" style="display:none;">
+
+      <div id="print-sticker-area" style="flex-direction: column; align-items: center; justify-content: space-between; font-family: 'JetBrains Mono', monospace; background: white; text-align: center; padding: 1mm 0;">
+        <div id="print-batch-code" style="font-size: 7.5px; font-weight: bold; line-height: 0.9;"></div>
+        <div id="print-expiry-date" style="font-size: 7.5px; font-weight: bold; line-height: 0.9;"></div>
+        <div id="print-user-name" style="font-size: 7.5px; font-weight: bold; line-height: 0.9;"></div>
+        <img id="print-qr-img" src="" style="width: 1.15cm; height: 1.15cm; object-fit: contain; margin: 0;" />
+        <div id="print-item-code" style="font-size: 8.5px; font-weight: bold; line-height: 0.9;"></div>
+        <div id="print-rcv-date" style="font-size: 7.5px; font-weight: bold; line-height: 0.9;"></div>
+      </div>
+
       <div id="stock-sub-report" class="stock-subpage">
         <div class="card" style="background-color: #fdfbf7;">
           <h2><i class="fa-solid fa-clipboard-list"></i> Stock Reports</h2>
           <p style="font-size: 12px; color: gray; margin-top: 0;">Select a report to view</p>
-          
+
           <button class="btn btn-primary" style="width: 100%; margin-bottom: 15px; font-size: 16px; padding: 15px; background-color: var(--secondary);" onclick="toggleBalanceReport()">
             <i class="fa-solid fa-boxes-stacked"></i> Current Stock Balance
           </button>
-          
+
           <div id="balance-report-section" style="display: none; border: 2px solid var(--secondary); border-radius: 15px; padding: 10px; margin-bottom: 15px; background: #fff;">
             <h4 style="margin-top: 5px; text-align: center; color: var(--dark); border-bottom: 1px dashed #EEE; padding-bottom: 10px;">Balance Report</h4>
             <div id="balance-report-container"></div>
           </div>
-          
+
           <hr style="border:0; border-top:1px dashed #DDD; margin: 20px 0;">
-          
+
           <button class="btn btn-warning" style="width: 100%; margin-bottom: 10px; padding: 12px;" onclick="toggleReprintSection()">
             <i class="fa-solid fa-print"></i> Reprint Stickers Menu
           </button>
-          
+
           <div id="reprint-section" style="display: none; border: 2px dashed var(--warning); border-radius: 15px; padding: 15px; background: #fff;">
             <p style="font-size: 12px; color: gray; text-align: center; margin-top: 0;">Print recent inbound labels</p>
             <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px; background: var(--warning); color: var(--dark);" onclick="loadReprintBatches()">
@@ -175,7 +179,7 @@
         <div class="card">
           <h2><i class="fa-solid fa-box-open"></i> Receive Inbound</h2>
           <p style="font-size: 12px; color: gray; margin-top: 0;">Search item to receive</p>
-          
+
           <div class="autocomplete-wrapper">
             <input type="text" id="inbound-item" class="input-styled" placeholder="Search Item Name or Code..." onkeyup="filterMaterial(this.value)" autocomplete="off">
             <div id="autocomplete-list" class="autocomplete-items"></div>
@@ -189,18 +193,18 @@
               <small id="info-details" style="color:gray;"></small>
             </div>
           </div>
-          
+
           <label style="font-size: 12px; font-weight: bold; color: var(--dark);">Quantity</label>
           <input type="text" id="inbound-qty" class="input-styled" placeholder="Tap to enter quantity" readonly onclick="openNumpad('inbound-qty')" style="background-color: #fff; font-size: 20px; font-weight: bold; text-align: center; color: var(--primary); cursor: pointer;">
-          
+
           <div id="inbound-qty-hint" style="font-size: 11px; color: var(--danger); margin-top: -5px; margin-bottom: 10px; font-weight: bold; display: none;"></div>
 
           <label style="font-size: 12px; font-weight: bold; color: var(--dark);">BIN Location</label>
           <input type="text" id="inbound-bin" class="input-styled" placeholder="BIN (e.g. A1)">
-          
+
           <label style="font-size: 12px; font-weight: bold; color: var(--dark);">Expiry Date</label>
           <input type="date" id="inbound-exp" class="input-styled">
-          
+
           <button class="btn btn-primary" style="width: 100%; margin-top: 10px; font-size: 18px;" onclick="submitInbound()">
             <i class="fa-solid fa-print"></i> Receive & Print Sticker
           </button>
@@ -211,18 +215,18 @@
         <div class="card">
           <h2><i class="fa-solid fa-truck-fast"></i> Outbound</h2>
           <p style="font-size: 12px; color: gray; margin-top: 0;">Scan QR or Search to issue</p>
-          
+
           <div id="qr-reader-container" style="display:none; margin-bottom: 15px; border: 2px dashed var(--dark); border-radius: 15px; overflow: hidden; background: #fff;">
-              <div id="qr-reader" style="width:100%;"></div>
-              <button class="btn btn-warning" style="width:100%; border-radius: 0; border:none; padding:10px;" onclick="closeQRScanner()"><i class="fa-solid fa-xmark"></i> Cancel Scan</button>
+            <div id="qr-reader" style="width:100%;"></div>
+            <button class="btn btn-warning" style="width:100%; border-radius: 0; border:none; padding:10px;" onclick="closeQRScanner()"><i class="fa-solid fa-xmark"></i> Cancel Scan</button>
           </div>
 
           <button class="btn btn-danger" id="btn-start-scan" style="width: 100%; margin-bottom: 15px; font-size: 16px; padding: 15px;" onclick="startQRScanner()">
             <i class="fa-solid fa-camera"></i> Tap to Scan QR
           </button>
-          
+
           <div style="text-align: center; margin-bottom: 15px; color: gray; font-size: 12px; font-weight: bold;">--- OR TYPE ---</div>
-          
+
           <div class="autocomplete-wrapper">
             <input type="text" id="outbound-search" class="input-styled" placeholder="Batch ID or Item Code..." onkeyup="filterOutbound(this.value)" autocomplete="off">
             <div id="outbound-autocomplete-list" class="autocomplete-items"></div>
@@ -236,25 +240,24 @@
               Available: <span id="out-available-qty"></span> <span id="out-uom"></span>
             </div>
           </div>
-          
+
           <label style="font-size: 12px; font-weight: bold; color: var(--dark);">Issue Quantity</label>
           <input type="text" id="outbound-qty" class="input-styled" placeholder="Tap to enter quantity" readonly onclick="openNumpad('outbound-qty')" style="background-color: #fff; font-size: 20px; font-weight: bold; text-align: center; color: var(--danger); cursor: pointer;">
-          
+
           <button class="btn btn-danger" style="width: 100%; margin-top: 10px; font-size: 18px;" onclick="submitOutbound()">
             <i class="fa-solid fa-check-to-slot"></i> Confirm Outbound
           </button>
         </div>
       </div>
 
-      <!-- NUMPAD MODAL -->
       <div id="numpad-modal" class="modal-overlay" style="display:none;">
         <div class="modal-content card" style="width: 90%; max-width: 350px; text-align: center;">
           <h3 style="margin-top:0; color: var(--dark);">Enter Quantity</h3>
-          
+
           <div id="numpad-display" style="font-size: 32px; font-weight: bold; margin-bottom: 15px; padding: 10px; background: #f4f7f6; border-radius: 12px; color: var(--primary); min-height: 55px; display: flex; align-items: center; justify-content: center; border: 2px solid #EEE;">
             0
           </div>
-          
+
           <div class="numpad-grid">
             <button class="numpad-btn" onclick="npAdd('1')">1</button>
             <button class="numpad-btn" onclick="npAdd('2')">2</button>
@@ -269,44 +272,45 @@
             <button class="numpad-btn" onclick="npAdd('0')">0</button>
             <button class="numpad-btn" style="visibility: hidden;"></button>
           </div>
-          
+
           <div style="display: flex; gap: 10px; margin-top: 15px;">
             <button class="btn btn-danger" style="flex: 1;" onclick="closeNumpad()">Cancel</button>
             <button class="btn btn-success" style="flex: 1; background-color: var(--success); color: var(--dark);" onclick="confirmNumpad()">Confirm</button>
           </div>
         </div>
       </div>
+
     </div>
-    
-    <!-- SUBPAGE: REFRIGERATOR -->
+
+    <!-- ============ PAGE: REFRIGERATOR ============ -->
     <div id="page-refrigerator" class="page-content" style="display:none;">
       <div class="card">
         <h2><i class="fa-solid fa-snowflake"></i> Refrigerator System</h2>
         <p style="color:gray; font-size:13px;">Temperature tracking and cold-chain items coming soon.</p>
       </div>
     </div>
-    
-    <!-- SUBPAGE: DASHBOARD -->
+
+    <!-- ============ PAGE: DASHBOARD ============ -->
     <div id="page-dashboard" class="page-content" style="display:none;">
       <div class="card" style="background: linear-gradient(135deg, var(--warning), var(--primary)); color:#fff; padding: 25px;">
         <h2 style="margin:0;"><i class="fa-solid fa-hand-sparkles"></i> Hello Friend!</h2>
         <p style="font-size:14px; margin-top:5px; opacity:0.9;">Welcome to Easy Stock Online PRO. Your warehouse monitoring dashboard is ready.</p>
       </div>
     </div>
-    
-    <!-- SUBPAGE: PROFILE -->
+
+    <!-- ============ PAGE: PROFILE ============ -->
     <div id="page-profile" class="page-content" style="display:none;">
       <div class="card" style="text-align: center;">
         <h2><i class="fa-solid fa-id-badge"></i> My Profile</h2>
-        
+
         <img id="prof-img-display" class="profile-header-img" src="" alt="Profile">
 
         <h3 id="prof-name" style="margin-bottom: 5px; color: var(--primary);"></h3>
         <p id="prof-role" style="margin: 5px 0; font-size: 14px; font-weight: bold;"></p>
         <p id="prof-site" style="margin: 5px 0; font-size: 14px; color: gray;"></p>
-        
+
         <hr style="border:0; border-top:1px dashed #DDD; margin: 15px 0;">
-        
+
         <button class="btn btn-warning" style="width: 100%; margin-bottom: 10px;" onclick="toggleEditProfileSection()">
           <i class="fa-solid fa-pen-to-square"></i> Edit Profile & Password
         </button>
@@ -316,7 +320,7 @@
             <label style="font-size: 12px; font-weight: bold; color: var(--dark);"><i class="fa-solid fa-camera"></i> Change Profile Picture</label>
             <input type="file" id="my-new-img" class="input-styled" accept="image/*" style="padding: 8px;">
           </div>
-          
+
           <div style="text-align: left; margin-bottom: 10px;">
             <label style="font-size: 12px; font-weight: bold; color: var(--dark);"><i class="fa-solid fa-lock"></i> Change Password</label>
             <input type="password" id="my-new-pwd" class="input-styled" placeholder="New Password (Optional)">
@@ -332,7 +336,7 @@
 
       <div class="card" id="manage-section" style="display: none; background-color: #fdfbf7;">
         <h2><i class="fa-solid fa-users-gear"></i> Manage Users</h2>
-        
+
         <button class="btn btn-primary" style="width: 100%; margin-bottom: 15px;" onclick="toggleCreateUserSection()">
           <i class="fa-solid fa-user-plus"></i> Add New User
         </button>
@@ -353,14 +357,14 @@
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
           <h4 style="margin: 0;">User List</h4>
         </div>
-        
+
         <input type="text" id="search-user-input" class="input-styled" placeholder="Search by name, username or role..." onkeyup="filterUsers()" style="margin-bottom: 15px;">
-        
+
         <div id="user-list"></div>
       </div>
     </div>
 
-    <!-- BOTTOM NAVIGATION: MAIN MENU -->
+    <!-- ============ NAV (MAIN) ============ -->
     <div class="bottom-nav" id="main-bottom-nav">
       <div class="nav-item" onclick="enterStockMode()" id="nav-stock">
         <i class="fa-solid fa-box"></i><span>Stock</span>
@@ -376,7 +380,7 @@
       </div>
     </div>
 
-    <!-- BOTTOM NAVIGATION: STOCK MENU -->
+    <!-- ============ NAV (STOCK) ============ -->
     <div class="bottom-nav" id="stock-bottom-nav" style="display: none; background: #e8f4f8;">
       <div class="nav-item" onclick="switchStockSubpage('inbound')" id="nav-stock-inbound">
         <i class="fa-solid fa-dolly"></i><span>Inbound</span>
@@ -391,53 +395,55 @@
         <i class="fa-solid fa-house-chimney-window"></i><span>Main Menu</span>
       </div>
     </div>
-    
+
   </div>
 
   <script>
-    // เปลี่ยน URL ตรงนี้เป็น URL ของ Google Apps Script Web App ที่ Deploy ล่าสุด
-    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbxV4vTpMUR_J6Wx48MtO_90xpXybXaA5pyd6t1daxC3hxG_qXue8hHbhWiK8WYHIPeU/exec";
+  // ==========================================================
+  // ⚙️ CONFIG — แก้ URL ตรงนี้ทุกครั้งที่ Deploy ใหม่ใน Apps Script
+  // ==========================================================
+  const API_URL = 'https://script.google.com/macros/s/AKfycbxV4vTpMUR_J6Wx48MtO_90xpXybXaA5pyd6t1daxC3hxG_qXue8hHbhWiK8WYHIPeU/exec';
 
-    let currentUser = null;
-    let allManagedUsers = []; 
-    let masterDataList = []; 
-    let selectedItemData = null; 
-    
-    // Numpad Variables
-    let currentNumpadValue = '0'; 
-    let currentNumpadTarget = 'inbound-qty'; // Default
+  // เรียก backend (doPost) ด้วย action + payload
+  // ใช้ Content-Type: text/plain เพื่อให้เป็น "simple request" -> เลี่ยง CORS preflight ของ Apps Script
+  async function callApi(action, payload) {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: action, payload: payload || {} }),
+      redirect: 'follow'
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return await res.json();
+  }
 
-    // Outbound Variables
-    let availableOutboundBatches = [];
-    let selectedOutboundBatch = null;
-    let html5QrcodeScanner = null;
+  // ==========================================================
+  // GLOBAL STATE
+  // ==========================================================
+  let currentUser = null;
+  let allManagedUsers = [];
+  let masterDataList = [];
+  let selectedItemData = null;
 
-    // ฟังก์ชันศูนย์กลางในการเรียก API ไปยัง Google Apps Script (doPost)
-    function callGAS(action, payload, successCallback, failureCallback) {
-      fetch(GAS_API_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: action, payload: payload }),
-        headers: {
-          'Content-Type': 'text/plain;charset=utf-8'
-        }
-      })
-      .then(response => response.json())
-      .then(res => {
-        if (successCallback) successCallback(res);
-      })
-      .catch(err => {
-        if (failureCallback) failureCallback(err);
-        else Swal.fire('System Error', err.message, 'error');
-      });
-    }
+  // Numpad
+  let currentNumpadValue = '0';
+  let currentNumpadTarget = 'inbound-qty';
 
-    window.onload = function() {
-      const savedUserId = localStorage.getItem('es_user_id');
-      if (savedUserId) {
-        Swal.fire({ title: 'Restoring Session...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-        
-        callGAS('validateSession', { userId: savedUserId }, function(res) {
-          if(res.success) {
+  // Outbound
+  let availableOutboundBatches = [];
+  let selectedOutboundBatch = null;
+  let html5QrcodeScanner = null;
+
+  // ==========================================================
+  // SESSION RESTORE
+  // ==========================================================
+  window.onload = function() {
+    const savedUserId = localStorage.getItem('es_user_id');
+    if (savedUserId) {
+      Swal.fire({ title: 'Restoring Session...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+      callApi('validateSession', { userId: savedUserId })
+        .then(function(res) {
+          if (res.success) {
             currentUser = res.user;
             setupAppUI();
             Swal.close();
@@ -445,21 +451,23 @@
             localStorage.removeItem('es_user_id');
             Swal.close();
           }
-        }, function(err) {
+        })
+        .catch(function(err) {
           Swal.fire({ icon: 'error', title: 'System Error', text: 'Session restoral failed: ' + err.message });
         });
-      }
-    };
+    }
+  };
 
-    function doLogin() {
-      const usr = document.getElementById('login-usr').value;
-      const pwd = document.getElementById('login-pwd').value;
-      if(!usr || !pwd) return Swal.fire({ icon: 'warning', title: 'Oops!', text: 'Please enter Username & Password' });
+  function doLogin() {
+    const usr = document.getElementById('login-usr').value;
+    const pwd = document.getElementById('login-pwd').value;
+    if (!usr || !pwd) return Swal.fire({ icon: 'warning', title: 'Oops!', text: 'Please enter Username & Password' });
 
-      Swal.fire({ title: 'Logging in...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-      
-      callGAS('checkLogin', { username: usr, password: pwd }, function(res) {
-        if(res.success) {
+    Swal.fire({ title: 'Logging in...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+
+    callApi('checkLogin', { username: usr, password: pwd })
+      .then(function(res) {
+        if (res.success) {
           currentUser = res.user;
           localStorage.setItem('es_user_id', currentUser.id);
           Swal.fire({ icon: 'success', title: 'Welcome!', text: 'Hello ' + currentUser.givenName, timer: 1500, showConfirmButton: false });
@@ -467,300 +475,298 @@
         } else {
           Swal.fire({ icon: 'error', title: 'Login Failed', text: res.message });
         }
-      }, function(err) {
+      })
+      .catch(function(err) {
         Swal.fire({ icon: 'error', title: 'System Error', text: 'Error in checkLogin: ' + err.message });
       });
+  }
+
+  function setupAppUI() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app-screen').style.display = 'block';
+
+    updateProfileHeaderDisplay();
+    document.getElementById('prof-name').innerText = currentUser.givenName + ' ' + currentUser.familyName;
+    document.getElementById('prof-role').innerText = 'Role: ' + currentUser.role.toUpperCase();
+    document.getElementById('prof-site').innerText = 'Site: ' + currentUser.site;
+
+    if (currentUser.role === 'superadmin' || currentUser.role === 'admin') {
+      document.getElementById('manage-section').style.display = 'block';
+      setupManagementForm();
+      loadManagedUsers();
+    } else {
+      document.getElementById('manage-section').style.display = 'none';
     }
 
-    function setupAppUI() {
-      document.getElementById('login-screen').style.display = 'none';
-      document.getElementById('app-screen').style.display = 'block';
-      
-      updateProfileHeaderDisplay();
-      document.getElementById('prof-name').innerText = currentUser.givenName + ' ' + currentUser.familyName;
-      document.getElementById('prof-role').innerText = 'Role: ' + currentUser.role.toUpperCase();
-      document.getElementById('prof-site').innerText = 'Site: ' + currentUser.site;
-      
-      if(currentUser.role === 'superadmin' || currentUser.role === 'admin') {
-        document.getElementById('manage-section').style.display = 'block';
-        setupManagementForm();
-        loadManagedUsers();
-      } else {
-        document.getElementById('manage-section').style.display = 'none';
-      }
+    switchPage('dashboard');
+  }
 
-      switchPage('dashboard'); 
-    }
+  function getAvatarUrl(name, imgUrl) {
+    if (imgUrl && imgUrl.trim() !== '') return imgUrl;
+    return 'https://ui-avatars.com/api/?name=' + encodeURIComponent(name) + '&background=FF9A8B&color=fff&size=150&rounded=true&font-family=JetBrains+Mono';
+  }
 
-    function getAvatarUrl(name, imgUrl) {
-      if (imgUrl && imgUrl.trim() !== '') return imgUrl;
-      return 'https://ui-avatars.com/api/?name=' + encodeURIComponent(name) + '&background=FF9A8B&color=fff&size=150&rounded=true&font-family=JetBrains+Mono';
-    }
+  function updateProfileHeaderDisplay() {
+    const imgSrc = getAvatarUrl(currentUser.givenName, currentUser.image);
+    document.getElementById('prof-img-display').src = imgSrc;
+  }
 
-    function updateProfileHeaderDisplay() {
-      const imgSrc = getAvatarUrl(currentUser.givenName, currentUser.image);
-      document.getElementById('prof-img-display').src = imgSrc;
-    }
-
-    // ==========================================
-    // NAVIGATION LOGIC 
-    // ==========================================
-    function switchPage(page) {
-      if(page !== 'stock') {
-        document.getElementById('main-bottom-nav').style.display = 'flex';
-        document.getElementById('stock-bottom-nav').style.display = 'none';
-      }
-
-      ['stock', 'refrigerator', 'dashboard', 'profile'].forEach(p => {
-        document.getElementById('page-' + p).style.display = 'none';
-        const navEl = document.getElementById('nav-' + p);
-        if(navEl) navEl.classList.remove('active');
-      });
-      
-      document.getElementById('page-' + page).style.display = 'block';
-      const activeNav = document.getElementById('nav-' + page);
-      if(activeNav) activeNav.classList.add('active');
-    }
-
-    function enterStockMode() {
-      callGAS('getMaterialMaster', { userSite: currentUser.site }, function(res) {
-        if(res.success) {
-          masterDataList = res.data;
-        } else {
-          Swal.fire('Error', res.message, 'error');
-        }
-      }, function(err) {
-        Swal.fire('Error', 'Failed to load materials: ' + err.message, 'error');
-      });
-        
-      document.getElementById('main-bottom-nav').style.display = 'none';
-      document.getElementById('stock-bottom-nav').style.display = 'flex';
-      switchPage('stock');
-      switchStockSubpage('report'); 
-
-      const todayStr = new Date().toISOString().split('T')[0];
-      document.getElementById('inbound-exp').min = todayStr;
-    }
-
-    function exitStockMode() {
-      document.getElementById('stock-bottom-nav').style.display = 'none';
+  // ==========================================================
+  // NAVIGATION
+  // ==========================================================
+  function switchPage(page) {
+    if (page !== 'stock') {
       document.getElementById('main-bottom-nav').style.display = 'flex';
+      document.getElementById('stock-bottom-nav').style.display = 'none';
+    }
+
+    ['stock', 'refrigerator', 'dashboard', 'profile'].forEach(p => {
+      document.getElementById('page-' + p).style.display = 'none';
+      const navEl = document.getElementById('nav-' + p);
+      if (navEl) navEl.classList.remove('active');
+    });
+
+    document.getElementById('page-' + page).style.display = 'block';
+    const activeNav = document.getElementById('nav-' + page);
+    if (activeNav) activeNav.classList.add('active');
+  }
+
+  function enterStockMode() {
+    callApi('getMaterialMaster', { userSite: currentUser.site })
+      .then(function(res) { masterDataList = (res && res.data) ? res.data : []; })
+      .catch(function(err) { Swal.fire('Error', 'Failed to load materials: ' + err.message, 'error'); });
+
+    document.getElementById('main-bottom-nav').style.display = 'none';
+    document.getElementById('stock-bottom-nav').style.display = 'flex';
+    switchPage('stock');
+    switchStockSubpage('report');
+
+    const todayStr = new Date().toISOString().split('T')[0];
+    document.getElementById('inbound-exp').min = todayStr;
+  }
+
+  function exitStockMode() {
+    document.getElementById('stock-bottom-nav').style.display = 'none';
+    document.getElementById('main-bottom-nav').style.display = 'flex';
+    closeQRScanner();
+    switchPage('dashboard');
+  }
+
+  function switchStockSubpage(subpage) {
+    if (subpage !== 'outbound') {
       closeQRScanner();
-      switchPage('dashboard'); 
     }
 
-    // ==========================================
-    // TOGGLE & REPORT LOGIC
-    // ==========================================
-    function switchStockSubpage(subpage) {
-      if(subpage !== 'outbound') {
-        closeQRScanner();
-      }
+    ['report', 'inbound', 'outbound'].forEach(p => {
+      document.getElementById('stock-sub-' + p).style.display = 'none';
+      document.getElementById('nav-stock-' + p).classList.remove('active');
+    });
+    document.getElementById('stock-sub-' + subpage).style.display = 'block';
+    document.getElementById('nav-stock-' + subpage).classList.add('active');
 
-      ['report', 'inbound', 'outbound'].forEach(p => {
-        document.getElementById('stock-sub-' + p).style.display = 'none';
-        document.getElementById('nav-stock-' + p).classList.remove('active');
-      });
-      document.getElementById('stock-sub-' + subpage).style.display = 'block';
-      document.getElementById('nav-stock-' + subpage).classList.add('active');
-      
-      if(subpage === 'report') {
-        document.getElementById('balance-report-section').style.display = 'none';
-        document.getElementById('reprint-section').style.display = 'none';
-      } else if (subpage === 'outbound') {
-        loadOutboundBatches(); 
-      }
+    if (subpage === 'report') {
+      document.getElementById('balance-report-section').style.display = 'none';
+      document.getElementById('reprint-section').style.display = 'none';
+    } else if (subpage === 'outbound') {
+      loadOutboundBatches();
     }
+  }
 
-    function toggleBalanceReport() {
-      const sec = document.getElementById('balance-report-section');
-      if (sec.style.display === 'none') {
-        sec.style.display = 'block';
-        loadBalanceReport(); 
-      } else {
-        sec.style.display = 'none';
-      }
+  // ==========================================================
+  // TOGGLE & REPORT
+  // ==========================================================
+  function toggleBalanceReport() {
+    const sec = document.getElementById('balance-report-section');
+    if (sec.style.display === 'none') {
+      sec.style.display = 'block';
+      loadBalanceReport();
+    } else {
+      sec.style.display = 'none';
     }
+  }
 
-    function toggleReprintSection() {
-      const sec = document.getElementById('reprint-section');
-      sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
-    }
+  function toggleReprintSection() {
+    const sec = document.getElementById('reprint-section');
+    sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
+  }
 
-    function loadBalanceReport() {
-      const container = document.getElementById('balance-report-container');
-      container.innerHTML = '<p style="text-align:center; color:gray;"><i class="fa-solid fa-spinner fa-spin"></i> Loading stock levels...</p>';
+  function loadBalanceReport() {
+    const container = document.getElementById('balance-report-container');
+    container.innerHTML = '<p style="text-align:center; color:gray;"><i class="fa-solid fa-spinner fa-spin"></i> Loading stock levels...</p>';
 
-      callGAS('getStockBalanceReport', { userSite: currentUser.site }, function(res) {
-        if(res.success) {
+    callApi('getStockBalanceReport', { userSite: currentUser.site })
+      .then(function(res) {
+        if (res.success) {
           renderBalanceReport(res.balances);
         } else {
           container.innerHTML = `<p style="text-align:center; color:var(--danger); font-weight:bold;">Warning: ${res.message}</p>`;
         }
-      }, function(err) {
-        container.innerHTML = `<p style="text-align:center; color:var(--danger); font-weight:bold;">Failed to fetch report: ${err.message}</p>';
+      })
+      .catch(function(err) {
+        container.innerHTML = `<p style="text-align:center; color:var(--danger); font-weight:bold;">Failed to fetch report: ${err.message}</p>`;
       });
+  }
+
+  function renderBalanceReport(balances) {
+    const container = document.getElementById('balance-report-container');
+    container.innerHTML = '';
+
+    if (!balances || balances.length === 0) {
+      container.innerHTML = '<p style="text-align:center; color:gray; font-size:14px; margin-top: 15px;"><i class="fa-solid fa-box-open" style="font-size:24px; display:block; margin-bottom:5px;"></i> No active stock items found.</p>';
+      return;
     }
 
-    function renderBalanceReport(balances) {
-      const container = document.getElementById('balance-report-container');
-      container.innerHTML = '';
-
-      if(!balances || balances.length === 0) {
-        container.innerHTML = '<p style="text-align:center; color:gray; font-size:14px; margin-top: 15px;"><i class="fa-solid fa-box-open" style="font-size:24px; display:block; margin-bottom:5px;"></i> No active stock items found.</p>';
-        return;
-      }
-
-      balances.forEach(b => {
-        const itemImgSrc = (b.image && b.image.trim() !== '') ? b.image : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(b.name) + '&background=eee&color=999';
-        container.innerHTML += `
-          <div class="user-list-item" style="padding: 12px 0;">
-            <div class="user-info-container">
-              <img src="${itemImgSrc}" class="user-avatar-img" style="border-radius:10px; border:1px solid #DDD;" onclick="showImage('${itemImgSrc}')" title="Click to enlarge">
-              <div>
-                <strong style="font-size: 14px; color: var(--dark);">${b.itemCode}</strong><br>
-                <small style="color: gray; font-weight:bold;">${b.name}</small>
-              </div>
-            </div>
-            <div style="text-align: right;">
-              <span style="font-size: 20px; font-weight: bold; color: var(--primary);">${b.totalQty}</span><br>
-              <small style="color:#888; font-weight:bold; font-size:11px;">${b.uom}</small>
-            </div>
-          </div>
-        `;
-      });
-    }
-
-    // ==========================================
-    // NUMPAD MODAL FUNCTIONS
-    // ==========================================
-    function openNumpad(targetId) {
-      currentNumpadTarget = targetId || 'inbound-qty';
-      currentNumpadValue = document.getElementById(currentNumpadTarget).value || '0';
-      document.getElementById('numpad-display').innerText = currentNumpadValue;
-      document.getElementById('numpad-modal').style.display = 'flex';
-    }
-
-    function closeNumpad() {
-      document.getElementById('numpad-modal').style.display = 'none';
-    }
-
-    function npAdd(numStr) {
-      if(currentNumpadValue === '0') {
-        currentNumpadValue = numStr;
-      } else {
-        currentNumpadValue += numStr;
-      }
-      document.getElementById('numpad-display').innerText = currentNumpadValue;
-    }
-
-    function npReset() {
-      currentNumpadValue = '0';
-      document.getElementById('numpad-display').innerText = currentNumpadValue;
-    }
-
-    function confirmNumpad() {
-      document.getElementById(currentNumpadTarget).value = currentNumpadValue === '0' ? '' : currentNumpadValue;
-      closeNumpad();
-    }
-
-    // ==========================================
-    // INBOUND & AUTOCOMPLETE SEARCH
-    // ==========================================
-    function filterMaterial(val) {
-      const listContainer = document.getElementById('autocomplete-list');
-      listContainer.innerHTML = '';
-      selectedItemData = null; 
-      document.getElementById('selected-item-info').style.display = 'none'; 
-      document.getElementById('inbound-qty-hint').style.display = 'none';
-      document.getElementById('inbound-qty').value = '';
-
-      if (!val) return false;
-      
-      if(!masterDataList || masterDataList.length === 0) {
-        const itemDiv = document.createElement("div");
-        itemDiv.innerHTML = `<small style="color:var(--danger); font-weight:bold;">No items found!</small>`;
-        listContainer.appendChild(itemDiv);
-        return false;
-      }
-
-      const query = val.toLowerCase();
-      const matches = masterDataList.filter(m => 
-        String(m.itemCode).toLowerCase().includes(query) || 
-        String(m.itemName).toLowerCase().includes(query) ||
-        String(m.category).toLowerCase().includes(query)
-      );
-
-      if(matches.length === 0) {
-        const itemDiv = document.createElement("div");
-        itemDiv.innerHTML = `<small style="color:gray;">No match found...</small>`;
-        listContainer.appendChild(itemDiv);
-        return false;
-      }
-
-      matches.slice(0, 10).forEach(m => {
-        const itemDiv = document.createElement("div");
-        const imgSrc = (m.image && m.image.trim() !== '') ? m.image : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(m.itemName) + '&background=eee&color=999';
-        
-        itemDiv.innerHTML = `
-          <div class="autocomplete-flex">
-            <img src="${imgSrc}" class="autocomplete-thumb" onerror="this.src='https://ui-avatars.com/api/?name=X&background=eee&color=999'">
+    balances.forEach(b => {
+      const itemImgSrc = (b.image && b.image.trim() !== '') ? b.image : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(b.name) + '&background=eee&color=999';
+      container.innerHTML += `
+        <div class="user-list-item" style="padding: 12px 0;">
+          <div class="user-info-container">
+            <img src="${itemImgSrc}" class="user-avatar-img" style="border-radius:10px; border:1px solid #DDD;" onclick="showImage('${itemImgSrc}')" title="Click to enlarge">
             <div>
-              <strong>${m.itemCode}</strong>: ${m.itemName} <br>
-              <small style="color:gray;">CAT: ${m.category} | LOT: ${m.lotSize} ${m.uom}</small>
+              <strong style="font-size: 14px; color: var(--dark);">${b.itemCode}</strong><br>
+              <small style="color: gray; font-weight:bold;">${b.name}</small>
             </div>
           </div>
-        `;
-        
-        itemDiv.onclick = function() {
-          document.getElementById('inbound-item').value = m.itemCode; 
-          selectedItemData = m;
-          
-          const imgEl = document.getElementById('info-image');
-          imgEl.src = imgSrc;
-          imgEl.onclick = function() { showImage(imgSrc); };
-          
-          document.getElementById('info-code').innerText = m.itemCode;
-          document.getElementById('info-name').innerText = m.itemName;
-          document.getElementById('info-details').innerText = `Lot Size: ${m.lotSize} ${m.uom} | Cat: ${m.category}`;
-          document.getElementById('selected-item-info').style.display = 'flex';
+          <div style="text-align: right;">
+            <span style="font-size: 20px; font-weight: bold; color: var(--primary);">${b.totalQty}</span><br>
+            <small style="color:#888; font-weight:bold; font-size:11px;">${b.uom}</small>
+          </div>
+        </div>
+      `;
+    });
+  }
 
-          document.getElementById('inbound-qty-hint').innerText = `* Qty must be a multiple of ${m.lotSize} ${m.uom}`;
-          document.getElementById('inbound-qty-hint').style.display = 'block';
+  // ==========================================================
+  // NUMPAD
+  // ==========================================================
+  function openNumpad(targetId) {
+    currentNumpadTarget = targetId || 'inbound-qty';
+    currentNumpadValue = document.getElementById(currentNumpadTarget).value || '0';
+    document.getElementById('numpad-display').innerText = currentNumpadValue;
+    document.getElementById('numpad-modal').style.display = 'flex';
+  }
 
-          document.getElementById('inbound-bin').value = m.defaultBin || '';
+  function closeNumpad() {
+    document.getElementById('numpad-modal').style.display = 'none';
+  }
 
-          if(m.daysToExpiry && parseInt(m.daysToExpiry) > 0) {
-            const expDate = new Date();
-            expDate.setDate(expDate.getDate() + parseInt(m.daysToExpiry));
-            document.getElementById('inbound-exp').value = expDate.toISOString().split('T')[0];
-          } else {
-            document.getElementById('inbound-exp').value = '';
-          }
-          listContainer.innerHTML = ''; 
-        };
-        listContainer.appendChild(itemDiv);
-      });
+  function npAdd(numStr) {
+    if (currentNumpadValue === '0') {
+      currentNumpadValue = numStr;
+    } else {
+      currentNumpadValue += numStr;
+    }
+    document.getElementById('numpad-display').innerText = currentNumpadValue;
+  }
+
+  function npReset() {
+    currentNumpadValue = '0';
+    document.getElementById('numpad-display').innerText = currentNumpadValue;
+  }
+
+  function confirmNumpad() {
+    document.getElementById(currentNumpadTarget).value = currentNumpadValue === '0' ? '' : currentNumpadValue;
+    closeNumpad();
+  }
+
+  // ==========================================================
+  // INBOUND & AUTOCOMPLETE
+  // ==========================================================
+  function filterMaterial(val) {
+    const listContainer = document.getElementById('autocomplete-list');
+    listContainer.innerHTML = '';
+    selectedItemData = null;
+    document.getElementById('selected-item-info').style.display = 'none';
+    document.getElementById('inbound-qty-hint').style.display = 'none';
+    document.getElementById('inbound-qty').value = '';
+
+    if (!val) return false;
+
+    if (!masterDataList || masterDataList.length === 0) {
+      const itemDiv = document.createElement("div");
+      itemDiv.innerHTML = `<small style="color:var(--danger); font-weight:bold;">No items found!</small>`;
+      listContainer.appendChild(itemDiv);
+      return false;
     }
 
-    function submitInbound() {
-      if(!selectedItemData) return Swal.fire('Oops!', 'Please search and select an Item first.', 'warning');
-      const qty = document.getElementById('inbound-qty').value;
-      const bin = document.getElementById('inbound-bin').value; 
-      const expDate = document.getElementById('inbound-exp').value;
-      if(!qty || !expDate) { return Swal.fire('Missing Data', 'Please fill Quantity and Expiry Date', 'warning'); }
+    const query = val.toLowerCase();
+    const matches = masterDataList.filter(m =>
+      String(m.itemCode).toLowerCase().includes(query) ||
+      String(m.itemName).toLowerCase().includes(query) ||
+      String(m.category).toLowerCase().includes(query)
+    );
 
-      const inputQtyNum = Number(qty);
-      const lotSizeNum = Number(selectedItemData.lotSize);
-      if (lotSizeNum > 0 && (inputQtyNum % lotSizeNum !== 0)) {
-        return Swal.fire({ icon: 'error', title: 'Invalid Quantity!', html: `Quantity must be a multiple of <b>${lotSizeNum} ${selectedItemData.uom}</b>.<br><br>You entered: <b style="color:var(--danger);">${inputQtyNum}</b>` });
-      }
+    if (matches.length === 0) {
+      const itemDiv = document.createElement("div");
+      itemDiv.innerHTML = `<small style="color:gray;">No match found...</small>`;
+      listContainer.appendChild(itemDiv);
+      return false;
+    }
 
-      Swal.fire({ title: 'Receiving Item...', didOpen: () => { Swal.showLoading(); } });
-      const data = { itemCode: selectedItemData.itemCode, qty: inputQtyNum, bin: bin, expDate: expDate };
-      
-      callGAS('receiveInboundItem', { userInfo: currentUser, data: data }, function(res) {
-        if(res.success) {
+    matches.slice(0, 10).forEach(m => {
+      const itemDiv = document.createElement("div");
+      const imgSrc = (m.image && m.image.trim() !== '') ? m.image : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(m.itemName) + '&background=eee&color=999';
+
+      itemDiv.innerHTML = `
+        <div class="autocomplete-flex">
+          <img src="${imgSrc}" class="autocomplete-thumb" onerror="this.src='https://ui-avatars.com/api/?name=X&background=eee&color=999'">
+          <div>
+            <strong>${m.itemCode}</strong>: ${m.itemName} <br>
+            <small style="color:gray;">CAT: ${m.category} | LOT: ${m.lotSize} ${m.uom}</small>
+          </div>
+        </div>
+      `;
+
+      itemDiv.onclick = function() {
+        document.getElementById('inbound-item').value = m.itemCode;
+        selectedItemData = m;
+
+        const imgEl = document.getElementById('info-image');
+        imgEl.src = imgSrc;
+        imgEl.onclick = function() { showImage(imgSrc); };
+
+        document.getElementById('info-code').innerText = m.itemCode;
+        document.getElementById('info-name').innerText = m.itemName;
+        document.getElementById('info-details').innerText = `Lot Size: ${m.lotSize} ${m.uom} | Cat: ${m.category}`;
+        document.getElementById('selected-item-info').style.display = 'flex';
+
+        document.getElementById('inbound-qty-hint').innerText = `* Qty must be a multiple of ${m.lotSize} ${m.uom}`;
+        document.getElementById('inbound-qty-hint').style.display = 'block';
+
+        document.getElementById('inbound-bin').value = m.defaultBin || '';
+
+        if (m.daysToExpiry && parseInt(m.daysToExpiry) > 0) {
+          const expDate = new Date();
+          expDate.setDate(expDate.getDate() + parseInt(m.daysToExpiry));
+          document.getElementById('inbound-exp').value = expDate.toISOString().split('T')[0];
+        } else {
+          document.getElementById('inbound-exp').value = '';
+        }
+        listContainer.innerHTML = '';
+      };
+      listContainer.appendChild(itemDiv);
+    });
+  }
+
+  function submitInbound() {
+    if (!selectedItemData) return Swal.fire('Oops!', 'Please search and select an Item first.', 'warning');
+    const qty = document.getElementById('inbound-qty').value;
+    const bin = document.getElementById('inbound-bin').value;
+    const expDate = document.getElementById('inbound-exp').value;
+    if (!qty || !expDate) { return Swal.fire('Missing Data', 'Please fill Quantity and Expiry Date', 'warning'); }
+
+    const inputQtyNum = Number(qty);
+    const lotSizeNum = Number(selectedItemData.lotSize);
+    if (lotSizeNum > 0 && (inputQtyNum % lotSizeNum !== 0)) {
+      return Swal.fire({ icon: 'error', title: 'Invalid Quantity!', html: `Quantity must be a multiple of <b>${lotSizeNum} ${selectedItemData.uom}</b>.<br><br>You entered: <b style="color:var(--danger);">${inputQtyNum}</b>` });
+    }
+
+    Swal.fire({ title: 'Receiving Item...', didOpen: () => { Swal.showLoading(); } });
+    const data = { itemCode: selectedItemData.itemCode, qty: inputQtyNum, bin: bin, expDate: expDate };
+
+    callApi('receiveInboundItem', { userInfo: currentUser, data: data })
+      .then(function(res) {
+        if (res.success) {
           document.getElementById('inbound-item').value = ''; document.getElementById('inbound-qty').value = ''; document.getElementById('inbound-exp').value = ''; document.getElementById('inbound-bin').value = '';
           document.getElementById('selected-item-info').style.display = 'none'; document.getElementById('inbound-qty-hint').style.display = 'none';
           selectedItemData = null;
@@ -768,22 +774,21 @@
             generateAndPrintSticker(res.batchData.batchId, res.batchData.itemCode, res.batchData.expDate, res.batchData.rcvBy, res.batchData.ReceiveDate);
           });
         } else { Swal.fire('Error', res.message, 'error'); }
-      }, function(err) {
-        Swal.fire('System Error', 'Failed to save inbound: ' + err.message, 'error');
-      });
-    }
+      })
+      .catch(function(err) { Swal.fire('System Error', 'Failed to save inbound: ' + err.message, 'error'); });
+  }
 
-    function loadReprintBatches() {
-      Swal.fire({ title: 'Loading...', didOpen: () => { Swal.showLoading(); } });
-      
-      callGAS('getRecentBatches', { site: currentUser.site }, function(batches) {
+  function loadReprintBatches() {
+    Swal.fire({ title: 'Loading...', didOpen: () => { Swal.showLoading(); } });
+    callApi('getRecentBatches', { site: currentUser.site })
+      .then(function(batches) {
         Swal.close();
         const list = document.getElementById('reprint-list');
         list.innerHTML = '';
-        if(batches.length === 0) { list.innerHTML = '<p style="text-align:center; color:#888;">No recent batches found.</p>'; return; }
+        if (!batches || batches.length === 0) { list.innerHTML = '<p style="text-align:center; color:#888;">No recent batches found.</p>'; return; }
         batches.forEach(b => {
           let dbDate = b.ReceiveDate || b.receiveDate || '-';
-          if (dbDate.includes('T')) {
+          if (typeof dbDate === 'string' && dbDate.includes('T')) {
             let d = new Date(dbDate);
             let dd = String(d.getDate()).padStart(2, '0'); let mm = String(d.getMonth() + 1).padStart(2, '0'); let yy = String(d.getFullYear()).slice(-2);
             dbDate = `${dd}/${mm}/${yy}`;
@@ -795,284 +800,272 @@
             </div>
           `;
         });
-      }, function(err) {
-        Swal.fire('Error', 'Failed to load batches: ' + err.message, 'error');
-      });
+      })
+      .catch(function(err) { Swal.fire('Error', 'Failed to load batches: ' + err.message, 'error'); });
+  }
+
+  function generateAndPrintSticker(batchId, itemCode, expDate, rcvBy, receiveDate) {
+    const printArea = document.getElementById('print-sticker-area') || document.getElementById('print-area');
+    let finalDate = "-";
+    if (receiveDate && receiveDate !== "undefined" && receiveDate !== "null" && receiveDate !== "") { finalDate = receiveDate; }
+    const qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(itemCode);
+    printArea.innerHTML = `
+      <div style="display: flex; flex-direction: column; align-items: center; justify-content: space-evenly; width: 100%; height: 100%; padding: 1.5mm 0; box-sizing: border-box; font-family: 'JetBrains Mono', monospace; background: white; text-align: center;">
+        <div style="font-size: 8px; font-weight: bold; line-height: 1;">${batchId}</div>
+        <div style="font-size: 8px; font-weight: bold; line-height: 1;">EXP: ${expDate}</div>
+        <div style="font-size: 8px; font-weight: bold; line-height: 1;">${rcvBy}</div>
+        <img src="${qrUrl}" style="width: 1.2cm; height: 1.2cm; object-fit: contain; margin: 0.5mm 0;" />
+        <div style="font-size: 9px; font-weight: bold; line-height: 1;">${itemCode}</div>
+        <div style="font-size: 8px; font-weight: bold; line-height: 1;">RCV: ${finalDate}</div>
+      </div>
+    `;
+    setTimeout(() => { window.print(); }, 500);
+  }
+
+  // ==========================================================
+  // OUTBOUND
+  // ==========================================================
+  function loadOutboundBatches() {
+    callApi('getAvailableBatchesForOutbound', { userSite: currentUser.site })
+      .then(function(res) {
+        if (res.success) availableOutboundBatches = res.batches;
+      })
+      .catch(function(err) { console.error("Failed to load outbound batches", err); });
+  }
+
+  function startQRScanner() {
+    document.getElementById('qr-reader-container').style.display = 'block';
+    document.getElementById('btn-start-scan').style.display = 'none';
+    if (!html5QrcodeScanner) {
+      html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 });
+      html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+    }
+  }
+
+  function closeQRScanner() {
+    if (html5QrcodeScanner) {
+      html5QrcodeScanner.clear().then(() => { html5QrcodeScanner = null; }).catch(e => { console.error(e); });
+    }
+    const qrContainer = document.getElementById('qr-reader-container');
+    const btnStart = document.getElementById('btn-start-scan');
+    if (qrContainer) qrContainer.style.display = 'none';
+    if (btnStart) btnStart.style.display = 'block';
+  }
+
+  function onScanSuccess(decodedText, decodedResult) {
+    closeQRScanner();
+    const searchInput = document.getElementById('outbound-search');
+
+    if (searchInput) {
+      searchInput.value = decodedText;
+      filterOutbound(decodedText);
+      Swal.fire({ icon: 'success', title: 'Scanned!', text: 'Code: ' + decodedText, timer: 1000, showConfirmButton: false });
+    } else {
+      console.error("Missing element ID: outbound-search");
+      Swal.fire('System Error', 'ไม่พบช่องค้นหา ID: outbound-search กรุณารีเฟรชหน้าเว็บ', 'error');
+    }
+  }
+
+  function onScanFailure(error) { /* ไม่ต้องแจ้งเตือนทุกเฟรม */ }
+
+  function filterOutbound(val) {
+    const listContainer = document.getElementById('outbound-autocomplete-list');
+    listContainer.innerHTML = '';
+    selectedOutboundBatch = null;
+    document.getElementById('outbound-selected-info').style.display = 'none';
+    document.getElementById('outbound-qty').value = '';
+
+    if (!val) return false;
+    const query = val.toLowerCase();
+
+    const matches = availableOutboundBatches.filter(b =>
+      String(b.batchId).toLowerCase().includes(query) ||
+      String(b.itemCode).toLowerCase().includes(query) ||
+      String(b.itemName).toLowerCase().includes(query)
+    );
+
+    matches.slice(0, 10).forEach(b => {
+      const itemDiv = document.createElement("div");
+      itemDiv.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div><strong>${b.itemCode}</strong> <br><small style="color:gray;">BAT: ${b.batchId}</small></div>
+          <div style="text-align:right; color:var(--primary); font-weight:bold;">${b.qty} <small>${b.uom}</small></div>
+        </div>`;
+
+      itemDiv.onclick = function() {
+        document.getElementById('outbound-search').value = b.batchId;
+        selectedOutboundBatch = b;
+
+        document.getElementById('out-batch-id').innerText = "BAT: " + b.batchId;
+        document.getElementById('out-item-code').innerText = b.itemCode + " - " + b.itemName;
+        document.getElementById('out-details').innerText = `BIN: ${b.bin} | EXP: ${b.expDate}`;
+        document.getElementById('out-available-qty').innerText = b.qty;
+        document.getElementById('out-uom').innerText = b.uom;
+
+        document.getElementById('outbound-selected-info').style.display = 'block';
+        listContainer.innerHTML = '';
+      };
+      listContainer.appendChild(itemDiv);
+    });
+  }
+
+  function submitOutbound() {
+    if (!selectedOutboundBatch) return Swal.fire('Oops!', 'Please scan or select a batch to issue.', 'warning');
+    const qty = document.getElementById('outbound-qty').value;
+    if (!qty) return Swal.fire('Missing Data', 'Please enter issue quantity', 'warning');
+
+    const issueQtyNum = Number(qty);
+    if (issueQtyNum <= 0 || issueQtyNum > selectedOutboundBatch.qty) {
+      return Swal.fire('Invalid Quantity', `Cannot issue ${issueQtyNum}. Available stock is ${selectedOutboundBatch.qty}`, 'error');
     }
 
-    function generateAndPrintSticker(batchId, itemCode, expDate, rcvBy, receiveDate) {
-      const printArea = document.getElementById('print-sticker-area') || document.getElementById('print-area');
-      let finalDate = "-";
-      if (receiveDate && receiveDate !== "undefined" && receiveDate !== "null" && receiveDate !== "") { finalDate = receiveDate; }
-      const qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(itemCode);
-      printArea.innerHTML = `
-        <div style="display: flex; flex-direction: column; align-items: center; justify-content: space-evenly; width: 100%; height: 100%; padding: 1.5mm 0; box-sizing: border-box; font-family: 'JetBrains Mono', monospace; background: white; text-align: center;">
-          <div style="font-size: 8px; font-weight: bold; line-height: 1;">${batchId}</div>
-          <div style="font-size: 8px; font-weight: bold; line-height: 1;">EXP: ${expDate}</div>
-          <div style="font-size: 8px; font-weight: bold; line-height: 1;">${rcvBy}</div>
-          <img src="${qrUrl}" style="width: 1.2cm; height: 1.2cm; object-fit: contain; margin: 0.5mm 0;" />
-          <div style="font-size: 9px; font-weight: bold; line-height: 1;">${itemCode}</div>
-          <div style="font-size: 8px; font-weight: bold; line-height: 1;">RCV: ${finalDate}</div>
-        </div>
-      `;
-      setTimeout(() => { window.print(); }, 500);
-    }
+    Swal.fire({ title: 'Processing...', didOpen: () => { Swal.showLoading(); } });
+    const data = { batchId: selectedOutboundBatch.batchId, qty: issueQtyNum };
 
-    // ==========================================
-    // OUTBOUND FUNCTIONS
-    // ==========================================
-    function loadOutboundBatches() {
-      callGAS('getAvailableBatchesForOutbound', { userSite: currentUser.site }, function(res) {
-        if(res.success) availableOutboundBatches = res.batches;
-      }, function(err) {
-        console.error("Failed to load outbound batches", err);
-      });
-    }
-
-    function startQRScanner() {
-      document.getElementById('qr-reader-container').style.display = 'block';
-      document.getElementById('btn-start-scan').style.display = 'none';
-      if(!html5QrcodeScanner) {
-        html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 });
-        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-      }
-    }
-
-    function closeQRScanner() {
-      if(html5QrcodeScanner) {
-        html5QrcodeScanner.clear().then(() => { html5QrcodeScanner = null; }).catch(e => { console.error(e); });
-      }
-      const qrContainer = document.getElementById('qr-reader-container');
-      const btnStart = document.getElementById('btn-start-scan');
-      if(qrContainer) qrContainer.style.display = 'none';
-      if(btnStart) btnStart.style.display = 'block';
-    }
-
-    function onScanSuccess(decodedText, decodedResult) {
-      closeQRScanner();
-      const searchInput = document.getElementById('outbound-search');
-      
-      if (searchInput) {
-        searchInput.value = decodedText;
-        filterOutbound(decodedText);
-        Swal.fire({icon:'success', title:'Scanned!', text:'Code: ' + decodedText, timer: 1000, showConfirmButton: false});
-      } else {
-        console.error("Missing element ID: outbound-search");
-        Swal.fire('System Error', 'ไม่พบช่องค้นหา ID: outbound-search กรุณารีเฟรชหน้าเว็บ', 'error');
-      }
-    }
-
-    function onScanFailure(error) { /* ไม่ต้องแจ้งเตือนทุกเฟรม */ }
-
-    function filterOutbound(val) {
-      const listContainer = document.getElementById('outbound-autocomplete-list');
-      listContainer.innerHTML = '';
-      selectedOutboundBatch = null; 
-      document.getElementById('outbound-selected-info').style.display = 'none'; 
-      document.getElementById('outbound-qty').value = '';
-
-      if (!val) return false;
-      const query = val.toLowerCase();
-      
-      const matches = availableOutboundBatches.filter(b => 
-        String(b.batchId).toLowerCase().includes(query) || 
-        String(b.itemCode).toLowerCase().includes(query) ||
-        String(b.itemName).toLowerCase().includes(query)
-      );
-
-      matches.slice(0, 10).forEach(b => {
-        const itemDiv = document.createElement("div");
-        itemDiv.innerHTML = `
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div><strong>${b.itemCode}</strong> <br><small style="color:gray;">BAT: ${b.batchId}</small></div>
-            <div style="text-align:right; color:var(--primary); font-weight:bold;">${b.qty} <small>${b.uom}</small></div>
-          </div>`;
-        
-        itemDiv.onclick = function() {
-          document.getElementById('outbound-search').value = b.batchId; 
-          selectedOutboundBatch = b;
-          
-          document.getElementById('out-batch-id').innerText = "BAT: " + b.batchId;
-          document.getElementById('out-item-code').innerText = b.itemCode + " - " + b.itemName;
-          document.getElementById('out-details').innerText = `BIN: ${b.bin} | EXP: ${b.expDate}`;
-          document.getElementById('out-available-qty').innerText = b.qty;
-          document.getElementById('out-uom').innerText = b.uom;
-          
-          document.getElementById('outbound-selected-info').style.display = 'block';
-          listContainer.innerHTML = ''; 
-        };
-        listContainer.appendChild(itemDiv);
-      });
-    }
-
-    function submitOutbound() {
-      if(!selectedOutboundBatch) return Swal.fire('Oops!', 'Please scan or select a batch to issue.', 'warning');
-      const qty = document.getElementById('outbound-qty').value;
-      if(!qty) return Swal.fire('Missing Data', 'Please enter issue quantity', 'warning');
-
-      const issueQtyNum = Number(qty);
-      if(issueQtyNum <= 0 || issueQtyNum > selectedOutboundBatch.qty) {
-        return Swal.fire('Invalid Quantity', `Cannot issue ${issueQtyNum}. Available stock is ${selectedOutboundBatch.qty}`, 'error');
-      }
-
-      Swal.fire({ title: 'Processing...', didOpen: () => { Swal.showLoading(); } });
-      const data = { batchId: selectedOutboundBatch.batchId, qty: issueQtyNum };
-      
-      callGAS('processOutboundTransaction', { userInfo: currentUser, data: data }, function(res) {
-        if(res.success) {
+    callApi('processOutboundTransaction', { userInfo: currentUser, data: data })
+      .then(function(res) {
+        if (res.success) {
           document.getElementById('outbound-search').value = '';
           document.getElementById('outbound-qty').value = '';
           document.getElementById('outbound-selected-info').style.display = 'none';
           selectedOutboundBatch = null;
-          loadOutboundBatches(); 
+          loadOutboundBatches();
           Swal.fire('Success', 'Issued successfully!', 'success');
         } else Swal.fire('Error', res.message, 'error');
-      }, function(err) {
-        Swal.fire('System Error', err.message, 'error');
-      });
-    }
+      })
+      .catch(function(err) { Swal.fire('System Error', err.message, 'error'); });
+  }
 
-    // ==========================================
-    // PROFILE & MANAGEMENT FUNCTIONS
-    // ==========================================
-    function toggleEditProfileSection() { document.getElementById('edit-profile-section').style.display = document.getElementById('edit-profile-section').style.display === 'none' ? 'block' : 'none'; }
-    function toggleCreateUserSection() { document.getElementById('create-user-section').style.display = document.getElementById('create-user-section').style.display === 'none' ? 'block' : 'none'; }
+  // ==========================================================
+  // PROFILE & MANAGEMENT
+  // ==========================================================
+  function toggleEditProfileSection() { document.getElementById('edit-profile-section').style.display = document.getElementById('edit-profile-section').style.display === 'none' ? 'block' : 'none'; }
+  function toggleCreateUserSection() { document.getElementById('create-user-section').style.display = document.getElementById('create-user-section').style.display === 'none' ? 'block' : 'none'; }
 
-    function updateMyProfile() {
-      const newPwd = document.getElementById('my-new-pwd').value;
-      const fileInput = document.getElementById('my-new-img');
-      const file = fileInput.files[0];
-      
-      if(!newPwd && !file) return Swal.fire('Notice', 'Nothing to update.', 'info');
-      if (file) {
-        if (file.size > 5 * 1024 * 1024) return Swal.fire('Error', 'File must not exceed 5MB', 'error'); 
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const dataUrl = e.target.result;
-          executeProfileUpdate(newPwd, dataUrl.split(',')[1], dataUrl.split(';')[0].split(':')[1]);
-        };
-        reader.readAsDataURL(file);
-      } else executeProfileUpdate(newPwd, null, null);
-    }
+  function updateMyProfile() {
+    const newPwd = document.getElementById('my-new-pwd').value;
+    const fileInput = document.getElementById('my-new-img');
+    const file = fileInput.files[0];
 
-    function executeProfileUpdate(pwd, base64, mime) {
-      Swal.fire({ title: 'Updating...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-      
-      callGAS('updateMyProfile', { userId: currentUser.id, newPassword: pwd, base64Data: base64, mimeType: mime }, function(res) {
-        if(res.success) {
+    if (!newPwd && !file) return Swal.fire('Notice', 'Nothing to update.', 'info');
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) return Swal.fire('Error', 'File must not exceed 5MB', 'error');
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const dataUrl = e.target.result;
+        executeProfileUpdate(newPwd, dataUrl.split(',')[1], dataUrl.split(';')[0].split(':')[1]);
+      };
+      reader.readAsDataURL(file);
+    } else executeProfileUpdate(newPwd, null, null);
+  }
+
+  function executeProfileUpdate(pwd, base64, mime) {
+    Swal.fire({ title: 'Updating...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+    callApi('updateMyProfile', { userId: currentUser.id, newPassword: pwd, base64Data: base64, mimeType: mime })
+      .then(function(res) {
+        if (res.success) {
           Swal.fire({ icon: 'success', title: 'Success', text: res.message });
           document.getElementById('my-new-pwd').value = ''; document.getElementById('my-new-img').value = '';
-          toggleEditProfileSection(); 
-          if(res.newImage) { currentUser.image = res.newImage; updateProfileHeaderDisplay(); }
+          toggleEditProfileSection();
+          if (res.newImage) { currentUser.image = res.newImage; updateProfileHeaderDisplay(); }
         } else Swal.fire({ icon: 'error', title: 'Error', text: res.message });
-      }, function(err) {
-        Swal.fire('System Error', 'Profile update failed: ' + err.message, 'error');
-      });
+      })
+      .catch(function(err) { Swal.fire('System Error', 'Profile update failed: ' + err.message, 'error'); });
+  }
+
+  function logout() {
+    currentUser = null; localStorage.removeItem('es_user_id');
+    document.getElementById('app-screen').style.display = 'none'; document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('login-pwd').value = '';
+  }
+
+  function setupManagementForm() {
+    const roleSelect = document.getElementById('new-user-role');
+    const siteInput = document.getElementById('new-user-site');
+    roleSelect.innerHTML = '';
+    if (currentUser.role === 'superadmin') {
+      roleSelect.innerHTML = '<option value="admin">Admin</option>'; siteInput.style.display = 'block';
+    } else if (currentUser.role === 'admin') {
+      roleSelect.innerHTML = '<option value="mt">MT</option><option value="staff">Staff</option><option value="viewer">Viewer</option>'; siteInput.style.display = 'none';
     }
+  }
 
-    function logout() {
-      currentUser = null; localStorage.removeItem('es_user_id'); 
-      document.getElementById('app-screen').style.display = 'none'; document.getElementById('login-screen').style.display = 'flex';
-      document.getElementById('login-pwd').value = '';
-    }
+  function loadManagedUsers() {
+    callApi('getManagedUsers', { managerRole: currentUser.role, managerSite: currentUser.site })
+      .then(function(users) { allManagedUsers = users || []; renderUserList(allManagedUsers); })
+      .catch(function(err) { Swal.fire('Error', 'Failed to load users: ' + err.message, 'error'); });
+  }
 
-    function setupManagementForm() {
-      const roleSelect = document.getElementById('new-user-role');
-      const siteInput = document.getElementById('new-user-site');
-      roleSelect.innerHTML = '';
-      if(currentUser.role === 'superadmin') {
-        roleSelect.innerHTML = '<option value="admin">Admin</option>'; siteInput.style.display = 'block'; 
-      } else if (currentUser.role === 'admin') {
-        roleSelect.innerHTML = '<option value="mt">MT</option><option value="staff">Staff</option><option value="viewer">Viewer</option>'; siteInput.style.display = 'none'; 
-      }
-    }
+  function renderUserList(usersToRender) {
+    const list = document.getElementById('user-list');
+    list.innerHTML = '';
+    if (usersToRender.length === 0) { list.innerHTML = '<p style="text-align: center; color: #888;">No users found.</p>'; return; }
 
-    function loadManagedUsers() {
-      callGAS('getManagedUsers', { managerRole: currentUser.role, managerSite: currentUser.site }, function(users) {
-        allManagedUsers = users; renderUserList(allManagedUsers);
-      }, function(err) {
-        Swal.fire('Error', 'Failed to load users: ' + err.message, 'error');
-      });
-    }
-
-    function renderUserList(usersToRender) {
-      const list = document.getElementById('user-list');
-      list.innerHTML = '';
-      if(usersToRender.length === 0) { list.innerHTML = '<p style="text-align: center; color: #888;">No users found.</p>'; return; }
-
-      usersToRender.forEach(u => {
-        const isChecked = u.status === 'ACTIVE' ? 'checked' : '';
-        const dis = currentUser.id === u.id ? 'disabled' : ''; 
-        const avatarSrc = getAvatarUrl(u.name, u.image);
-        list.innerHTML += `
-          <div class="user-list-item">
-            <div class="user-info-container">
-              <img src="${avatarSrc}" class="user-avatar-img" onclick="showImage('${avatarSrc}')">
-              <div><strong style="font-size: 14px;">${u.name}</strong><br><small style="color: #888;">@${u.user} (${u.role})<br><i class="fa-solid fa-location-dot"></i> ${u.site}</small></div>
-            </div>
-            <div>
-              <button class="btn btn-warning" onclick="resetPwd('${u.id}', ${u.row})" style="margin-right: 5px;"><i class="fa-solid fa-key"></i></button>
-              <label class="switch"><input type="checkbox" ${isChecked} ${dis} onchange="toggleStatus('${u.id}', '${u.status}', ${u.row})"><span class="slider"></span></label>
-            </div>
+    usersToRender.forEach(u => {
+      const isChecked = u.status === 'ACTIVE' ? 'checked' : '';
+      const dis = currentUser.id === u.id ? 'disabled' : '';
+      const avatarSrc = getAvatarUrl(u.name, u.image);
+      list.innerHTML += `
+        <div class="user-list-item">
+          <div class="user-info-container">
+            <img src="${avatarSrc}" class="user-avatar-img" onclick="showImage('${avatarSrc}')">
+            <div><strong style="font-size: 14px;">${u.name}</strong><br><small style="color: #888;">@${u.user} (${u.role})<br><i class="fa-solid fa-location-dot"></i> ${u.site}</small></div>
           </div>
-        `;
-      });
+          <div>
+            <button class="btn btn-warning" onclick="resetPwd('${u.id}', ${u.row})" style="margin-right: 5px;"><i class="fa-solid fa-key"></i></button>
+            <label class="switch"><input type="checkbox" ${isChecked} ${dis} onchange="toggleStatus('${u.id}', '${u.status}', ${u.row})"><span class="slider"></span></label>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  function filterUsers() {
+    const query = document.getElementById('search-user-input').value.toLowerCase();
+    const filteredUsers = allManagedUsers.filter(u => u.name.toLowerCase().includes(query) || u.user.toLowerCase().includes(query) || u.role.toLowerCase().includes(query));
+    renderUserList(filteredUsers);
+  }
+
+  function showImage(url) { Swal.fire({ imageUrl: url, showConfirmButton: false, customClass: { image: 'swal-custom-image' }, backdrop: `rgba(0,0,0,0.85)` }); }
+
+  function createNewUser() {
+    const u = document.getElementById('new-user-usr').value, p = document.getElementById('new-user-pwd').value;
+    const gn = document.getElementById('new-user-gn').value, fn = document.getElementById('new-user-fn').value;
+    const role = document.getElementById('new-user-role').value; let site = currentUser.site;
+
+    if (currentUser.role === 'superadmin') {
+      site = document.getElementById('new-user-site').value; if (!site) return Swal.fire('Oops', 'Please enter a Site name', 'warning');
     }
+    if (!u || !p || !gn) return Swal.fire('Oops', 'Please fill required fields', 'warning');
 
-    function filterUsers() {
-      const query = document.getElementById('search-user-input').value.toLowerCase();
-      const filteredUsers = allManagedUsers.filter(u => u.name.toLowerCase().includes(query) || u.user.toLowerCase().includes(query) || u.role.toLowerCase().includes(query));
-      renderUserList(filteredUsers);
-    }
-
-    // eslint-disable-next-line no-unused-vars
-    function showImage(url) { Swal.fire({ imageUrl: url, showConfirmButton: false, customClass: { image: 'swal-custom-image' }, backdrop: `rgba(0,0,0,0.85)` }); }
-
-    function createNewUser() {
-      const u = document.getElementById('new-user-usr').value, p = document.getElementById('new-user-pwd').value;
-      const gn = document.getElementById('new-user-gn').value, fn = document.getElementById('new-user-fn').value;
-      const role = document.getElementById('new-user-role').value; let site = currentUser.site;
-      
-      if(currentUser.role === 'superadmin') {
-        site = document.getElementById('new-user-site').value; if(!site) return Swal.fire('Oops', 'Please enter a Site name', 'warning');
-      }
-      if(!u || !p || !gn) return Swal.fire('Oops', 'Please fill required fields', 'warning');
-
-      Swal.fire({ title: 'Creating...', didOpen: () => { Swal.showLoading(); } });
-      
-      callGAS('createUser', { managerInfo: currentUser, newUser: {username: u, password: p, givenName: gn, familyName: fn, role: role, site: site} }, function(res) {
-        if(res.success) {
+    Swal.fire({ title: 'Creating...', didOpen: () => { Swal.showLoading(); } });
+    callApi('createUser', { managerInfo: currentUser, newUser: { username: u, password: p, givenName: gn, familyName: fn, role: role, site: site } })
+      .then(function(res) {
+        if (res.success) {
           Swal.fire({ icon: 'success', title: 'Result', text: res.message });
-          ['new-user-usr','new-user-pwd','new-user-gn','new-user-fn'].forEach(id => document.getElementById(id).value = '');
+          ['new-user-usr', 'new-user-pwd', 'new-user-gn', 'new-user-fn'].forEach(id => document.getElementById(id).value = '');
           toggleCreateUserSection(); loadManagedUsers();
         } else Swal.fire({ icon: 'error', title: 'Result', text: res.message });
-      }, function(err) {
-        Swal.fire('Error', 'Failed to create user: ' + err.message, 'error');
-      });
-    }
+      })
+      .catch(function(err) { Swal.fire('Error', 'Failed to create user: ' + err.message, 'error'); });
+  }
 
-    function toggleStatus(id, currentStatus, row) { 
-      callGAS('toggleUserStatus', { managerInfo: currentUser, targetId: id, currentStatus: currentStatus, targetRow: row }, function(res) {
-        if(!res.success) Swal.fire('Error', res.message, 'error'); 
-        loadManagedUsers();
-      }, function(err) {
-        Swal.fire('Error', 'Failed to toggle status: ' + err.message, 'error');
-      });
-    }
+  function toggleStatus(id, currentStatus, row) {
+    callApi('toggleUserStatus', { managerInfo: currentUser, targetId: id, currentStatus: currentStatus, targetRow: row })
+      .then(function(res) { if (!res.success) Swal.fire('Error', res.message, 'error'); loadManagedUsers(); })
+      .catch(function(err) { Swal.fire('Error', 'Failed to toggle status: ' + err.message, 'error'); });
+  }
 
-    function resetPwd(id, row) {
-      Swal.fire({ title: 'Reset Password', input: 'password', showCancelButton: true, confirmButtonText: 'Reset' }).then((result) => {
-        if (result.isConfirmed && result.value) {
-          Swal.fire({ title: 'Resetting...', didOpen: () => { Swal.showLoading(); } });
-          
-          callGAS('resetUserPassword', { managerInfo: currentUser, targetId: id, targetRow: row, newPassword: result.value }, function(res) {
-            Swal.fire('Success', res.message, 'success');
-          }, function(err) {
-            Swal.fire('Error', 'Failed to reset password: ' + err.message, 'error');
-          });
-        }
-      });
-    }
+  function resetPwd(id, row) {
+    Swal.fire({ title: 'Reset Password', input: 'password', showCancelButton: true, confirmButtonText: 'Reset' }).then((result) => {
+      if (result.isConfirmed && result.value) {
+        Swal.fire({ title: 'Resetting...', didOpen: () => { Swal.showLoading(); } });
+        callApi('resetUserPassword', { managerInfo: currentUser, targetId: id, targetRow: row, newPassword: result.value })
+          .then(function(res) { Swal.fire('Success', res.message, 'success'); })
+          .catch(function(err) { Swal.fire('Error', 'Failed to reset password: ' + err.message, 'error'); });
+      }
+    });
+  }
   </script>
 </body>
 </html>
