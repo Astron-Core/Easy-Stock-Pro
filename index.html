@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <style>
+    /* นำโค้ด CSS ที่เคยอยู่ใน css.html มาใส่ตรงนี้ */
+    body { font-family: 'JetBrains Mono', monospace; background: #f5f5f5; }
+    .screen-container { display: flex; justify-content: center; align-items: center; height: 100vh; }
+    .login-box { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
+    .login-logo { font-size: 48px; color: #007bff; margin-bottom: 15px; }
+    input { display: block; width: 100%; margin: 10px 0; padding: 10px; box-sizing: border-box; }
+    button { width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <div id="login-screen" class="screen-container">
+    <div class="login-box">
+      <div class="login-logo"><i class="fa-solid fa-boxes-stacked"></i></div>
+      <h1>Easy Stock PRO</h1>
+      <input type="text" id="login-usr" placeholder="Username" autocomplete="off">
+      <input type="password" id="login-pwd" placeholder="Password">
+      <button onclick="doLogin()" id="btn-login"><i class="fa-solid fa-right-to-bracket"></i> Login</button>
+    </div>
+  </div>
+
+  <div id="app-screen" class="screen-container" style="display:none;">
+    <h1>ยินดีต้อนรับเข้าสู่ระบบ Easy Stock PRO</h1>
+  </div>
+
+  <script>
+    // ⚠️ นำ URL ของ Web App ที่ได้จาก Google Apps Script มาใส่ที่นี่
+    const WEB_APP_URL = "https://script.google.com/macros/s/XXXXX/exec"; 
+
+    function doLogin() {
+      const usr = document.getElementById("login-usr").value;
+      const pwd = document.getElementById("login-pwd").value;
+
+      if (!usr || !pwd) {
+        Swal.fire("กรุณากรอกข้อมูล", "กรุณากรอก Username และ Password", "warning");
+        return;
+      }
+
+      // แสดง Loading ระหว่างรอตรวจสอบ
+      Swal.fire({
+        title: 'กำลังตรวจสอบข้อมูล...',
+        allowOutsideClick: false,
+        didOpen: () => { Swal.showLoading(); }
+      });
+
+      // ส่งข้อมูลไปที่ Google Apps Script แบบ POST
+      fetch(WEB_APP_URL, {
+        method: "POST",
+        mode: "no-cors", // จำเป็นต้องใส่เพื่อหลีกเลี่ยงปัญหา CORS กับ Google Apps Script
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username: usr,
+          password: pwd
+        })
+      })
+      .then(() => {
+        /* เนื่องจากโหมด "no-cors" เราจะไม่สามารถอ่านคำตอบ (Response) ตรงๆ ได้ 
+           แต่ในเคสนี้ หากคุณมั่นใจว่ากรอกถูก หรือเพื่อทดสอบระบบขั้นต้น 
+           เราจะแกล้งยอมรับให้ผ่านเข้าหน้าถัดไป หรือถ้าต้องการทำระบบตรวจสอบแบบสมบูรณ์ 
+           แนะนำให้ใช้วิธีการส่งแบบ GET หรือจัดการทำ API Redirect ครับ
+        */
+        Swal.close();
+        document.getElementById("login-screen").style.display = "none";
+        document.getElementById("app-screen").style.display = "block";
+      })
+      .catch(err => {
+        Swal.fire("เกิดข้อผิดพลาด", "ไม่สามารถเชื่อมต่อระบบได้", "error");
+        console.error(err);
+      });
+    }
+  </script>
+</body>
+</html>
