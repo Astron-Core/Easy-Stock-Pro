@@ -1,117 +1,115 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
+  <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Easy Stock Online PRO</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <script>
+    window.onerror = function(msg, src, line, col, err) {
+      try { alert('JS Error:\n' + msg + '\n(line ' + line + ':' + col + ')'); } catch(e) {}
+      return false;
+    };
+  </script>
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
+
+  <?!= include('css'); ?>
 
   <style>
-    :root {
-      --primary: #FF4081;     /* สีชมพู MACKAY (ปุ่ม/เมนู Active) */
-      --secondary: #B3E5FC;   /* สีฟ้าอ่อนพาสเทล */
-      --success: #C8E6C9;     /* สีเขียวพาสเทล */
-      --warning: #FFF176;     /* สีเหลืองพาสเทล */
-      --danger: #FFCDD2;      /* สีชมพูอ่อน/แดง */
-      --dark: #2D2D2D;        /* สีเทาเข้ม/ดำ (สำหรับตัวอักษรและเส้นขอบหนา) */
-      --light: #E0F7FA;       /* สีฟ้าพาสเทล (พื้นหลังหลัก) */
-      --white: #FFFDE7;       /* สีครีมอ่อน (พื้นหลังการ์ด/กล่อง) */
+    /* ===== Energy Core Login overlay ===== */
+    #login-screen {
+      background: #02040a !important;
+      position: relative;
+      overflow: hidden;
     }
-
-    * { box-sizing: border-box; font-family: 'JetBrains Mono', monospace; }
-    body { margin: 0; padding: 0; background-color: var(--light); color: var(--dark); -webkit-tap-highlight-color: transparent; }
-    .screen-container { width: 100vw; height: 100vh; overflow: hidden; position: relative; }
-
-    /* --- LOGIN --- */
-    #login-screen { display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, var(--light), var(--secondary)); }
-    .login-box { background: var(--white); padding: 30px; border-radius: 25px; box-shadow: 6px 6px 0px var(--dark); width: 90%; max-width: 400px; text-align: center; border: 3px solid var(--dark); }
-    .login-logo { font-size: 50px; color: var(--primary); margin-bottom: 10px; }
-    .login-box h1 { font-size: 24px; margin-bottom: 25px; color: var(--dark); font-weight: bold; }
-    .login-box input { width: 100%; padding: 15px; margin-bottom: 15px; border: 2px solid var(--dark); border-radius: 12px; font-size: 16px; outline: none; transition: all 0.3s; background-color: #FFFFFF; }
-    .login-box input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255, 64, 129, 0.2); }
-    .login-box button { width: 100%; padding: 15px; background-color: var(--primary); color: #FFFFFF; border: 2px solid var(--dark); border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 4px 4px 0px var(--dark); transition: transform 0.1s, box-shadow 0.1s; }
-    .login-box button:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px var(--dark); }
-
-    /* --- APP MAIN --- */
-    .page-content { height: calc(100vh - 70px); overflow-y: auto; padding: 20px; padding-bottom: 40px; }
-
-    .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 70px; background: var(--white); display: flex; justify-content: space-around; align-items: center; border-top: 3px solid var(--dark); border-top-left-radius: 20px; border-top-right-radius: 20px; z-index: 1000; }
-    .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--dark); cursor: pointer; width: 25%; transition: all 0.3s; opacity: 0.6; }
-    .nav-item i { font-size: 24px; margin-bottom: 4px; }
-    .nav-item span { font-size: 12px; font-weight: bold; }
-    .nav-item.active { color: var(--primary); opacity: 1; transform: translateY(-3px); }
-
-    .card { background: var(--white); border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 3px solid var(--dark); box-shadow: 4px 4px 0px var(--dark); }
-    .btn { padding: 10px 15px; border: 2px solid var(--dark); border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 14px; box-shadow: 3px 3px 0px var(--dark); transition: all 0.1s; }
-    .btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px var(--dark); }
-
-    .btn-primary { background: var(--primary); color: #FFFFFF; }
-    .btn-warning { background: var(--warning); color: var(--dark); }
-    .btn-danger { background: var(--danger); color: var(--dark); }
-    .btn-success { background: var(--success); color: var(--dark); }
-
-    .input-styled { width: 100%; padding: 12px; margin-bottom: 10px; border: 2px solid var(--dark); border-radius: 12px; font-size: 14px; background-color: #FFFFFF; }
-    .input-styled:focus { outline: none; border-color: var(--primary); }
-
-    /* --- AUTOCOMPLETE SEARCH --- */
-    .autocomplete-wrapper { position: relative; display: block; }
-    .autocomplete-items { position: absolute; border: 2px solid var(--dark); border-top: none; z-index: 99; top: 100%; left: 0; right: 0; max-height: 200px; overflow-y: auto; background: var(--white); border-radius: 0 0 10px 10px; box-shadow: 4px 4px 0px var(--dark); }
-    .autocomplete-items div { padding: 10px; cursor: pointer; border-bottom: 1px dashed var(--dark); font-size: 12px; }
-    .autocomplete-items div:last-child { border-bottom: none; }
-    .autocomplete-items div:hover { background-color: var(--warning); }
-    .autocomplete-flex { display: flex; align-items: center; gap: 10px; }
-    .autocomplete-thumb { width: 40px; height: 40px; object-fit: cover; border-radius: 8px; border: 2px solid var(--dark); flex-shrink: 0; background-color: #FFFFFF; }
-
-    /* --- NUMPAD MODAL --- */
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(45,45,45,0.7); z-index: 2000; display: flex; justify-content: center; align-items: center; }
-    .modal-content { animation: slideUp 0.3s ease-out; }
-    @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-    .numpad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-    .numpad-btn { padding: 15px 0; font-size: 22px; font-weight: bold; border-radius: 12px; background: #FFFFFF; border: 3px solid var(--dark); color: var(--dark); box-shadow: 3px 3px 0px var(--dark); cursor: pointer; transition: all 0.1s; }
-    .numpad-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px var(--dark); background: var(--warning); }
-
-    /* --- AVATAR & USER LIST --- */
-    .user-list-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 2px dashed var(--dark); gap: 10px; }
-    .user-list-item:last-child { border-bottom: none; }
-    .user-info-container { display: flex; align-items: center; gap: 12px; flex: 1; }
-    .user-avatar-img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; cursor: pointer; border: 2px solid var(--dark); background-color: #FFFFFF; }
-    .profile-header-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin: 0 auto 10px auto; border: 3px solid var(--dark); display: block; background-color: #FFFFFF; }
-    .swal-custom-image { border: 4px solid var(--dark); border-radius: 15px; box-shadow: 6px 6px 0px var(--dark); }
-
-    /* --- TOGGLE SWITCH --- */
-    .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
-    .switch input { opacity: 0; width: 0; height: 0; }
-    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--danger); transition: .4s; border-radius: 34px; border: 2px solid var(--dark); }
-    .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: #FFFFFF; transition: .4s; border-radius: 50%; border: 2px solid var(--dark); }
-    input:checked + .slider { background-color: var(--success); }
-    input:checked + .slider:before { transform: translateX(24px); }
-
-    /* --- PRINT STYLES (legacy #print-area) --- */
-    #print-area { display: none; }
-    @media print {
-      body * { visibility: hidden; }
-      #print-area, #print-area * { visibility: visible; }
-      #print-area { position: absolute; left: 0; top: 0; width: 100%; display: flex; justify-content: flex-start; align-items: flex-start; }
-      .sticker-container { width: 50mm; padding: 5px; border: 1px solid #000; font-family: 'JetBrains Mono', monospace; color: #000; text-align: center; background: #fff; page-break-inside: avoid; }
-      .sticker-qr { display: flex; justify-content: center; margin: 5px 0; }
-      .sticker-qr img { width: 80px; height: 80px; }
-      .sticker-text { font-size: 10px; font-weight: bold; margin: 2px 0; }
+    #energy-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      z-index: 1;
+      cursor: pointer;
     }
+    .core-hint, .core-label {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      pointer-events: none;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      transition: opacity 0.4s ease;
+    }
+    .core-hint {
+      bottom: 72px;
+      color: rgba(0, 220, 255, 0.4);
+      font-size: 10px;
+    }
+    .core-label {
+      bottom: 40px;
+      color: rgba(0, 220, 255, 0.55);
+      font-size: 11px;
+      text-shadow: 0 0 12px rgba(0, 200, 255, 0.35);
+    }
+    .core-label strong { color: rgba(0, 255, 220, 0.9); font-weight: 500; }
 
-    /* --- PRINT STYLES (sticker area) --- */
-    #print-sticker-area { display: none; }
-    @media print {
-      @page { margin: 0; }
-      html, body { width: 100% !important; height: 100vh !important; margin: 0 !important; padding: 0 !important; overflow: hidden !important; background: #fff; }
-      #print-sticker-area { display: flex !important; visibility: visible; position: absolute; left: 0; top: 0; width: 100%; height: 100%; box-sizing: border-box; background: #fff; overflow: hidden !important; }
-      #print-sticker-area * { visibility: visible; }
+    #login-screen .login-box {
+      position: relative;
+      z-index: 5;
+      transform: scale(0.12);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease;
+    }
+    #login-screen.form-open .login-box {
+      transform: scale(1);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #login-screen.form-open #energy-canvas {
+      filter: brightness(0.4) blur(2px);
+      transition: filter 0.5s ease;
+    }
+    #login-screen:not(.form-open) #energy-canvas {
+      filter: none;
+      transition: filter 0.5s ease;
+    }
+    #login-screen.form-open .core-hint,
+    #login-screen.form-open .core-label { opacity: 0; }
+
+    .login-close-btn {
+      position: absolute !important;
+      top: 12px !important;
+      right: 14px !important;
+      width: 30px !important;
+      height: 30px !important;
+      min-width: 30px !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      border: 1px solid #CBD5E1 !important;
+      border-radius: 50% !important;
+      background: #fff !important;
+      color: #64748B !important;
+      font-size: 16px !important;
+      font-weight: bold !important;
+      cursor: pointer !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      box-shadow: none !important;
+      z-index: 10 !important;
+    }
+    .login-close-btn:hover { background: #FDECEE !important; color: #DC3545 !important; }
+
+    /* Ensure page content fills main area */
+    .app-main > .page-content {
+      flex: 1 1 auto;
+      min-height: 0;
     }
   </style>
 </head>
@@ -119,953 +117,747 @@
 
   <div id="print-area"></div>
 
-  <!-- ====================== LOGIN ====================== -->
+  <!-- ==================== LOGIN (Energy Core) ==================== -->
   <div id="login-screen" class="screen-container">
+    <canvas id="energy-canvas"></canvas>
+    <div class="core-hint">CLICK TO ACCESS</div>
+    <div class="core-label">EASY STOCK PRO · <strong>ACTIVE</strong></div>
+
     <div class="login-box">
+      <button type="button" class="login-close-btn" id="login-close-btn" title="Close">×</button>
       <div class="login-logo"><i class="fa-solid fa-boxes-stacked"></i></div>
       <h1>Easy Stock PRO</h1>
-      <input type="text" id="login-usr" placeholder="Username" autocomplete="off">
-      <input type="password" id="login-pwd" placeholder="Password">
-      <button onclick="doLogin()" id="btn-login"><i class="fa-solid fa-right-to-bracket"></i> Login</button>
+      <form id="login-form-inner" onsubmit="doLogin(); return false;">
+        <input type="text" id="login-usr" placeholder="Username" autocomplete="off">
+        <input type="password" id="login-pwd" placeholder="Password">
+        <button type="submit" id="btn-login"><i class="fa-solid fa-right-to-bracket"></i> Login</button>
+      </form>
     </div>
   </div>
 
-  <!-- ====================== APP ====================== -->
+  <!-- ==================== APP ==================== -->
   <div id="app-screen" class="screen-container" style="display:none;">
 
-    <!-- ============ PAGE: STOCK ============ -->
-    <div id="page-stock" class="page-content" style="display:none;">
-
-      <div id="print-sticker-area" style="flex-direction: column; align-items: center; justify-content: space-between; font-family: 'JetBrains Mono', monospace; background: white; text-align: center; padding: 1mm 0;">
-        <div id="print-batch-code" style="font-size: 7.5px; font-weight: bold; line-height: 0.9;"></div>
-        <div id="print-expiry-date" style="font-size: 7.5px; font-weight: bold; line-height: 0.9;"></div>
-        <div id="print-user-name" style="font-size: 7.5px; font-weight: bold; line-height: 0.9;"></div>
-        <img id="print-qr-img" src="" style="width: 1.15cm; height: 1.15cm; object-fit: contain; margin: 0;" />
-        <div id="print-item-code" style="font-size: 8.5px; font-weight: bold; line-height: 0.9;"></div>
-        <div id="print-rcv-date" style="font-size: 7.5px; font-weight: bold; line-height: 0.9;"></div>
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+    <aside class="app-sidebar" id="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-mark">ES</div>
+        <div class="brand-text">Easy Stock <span>PRO</span></div>
       </div>
 
-      <div id="stock-sub-report" class="stock-subpage">
-        <div class="card" style="background-color: #fdfbf7;">
-          <h2><i class="fa-solid fa-clipboard-list"></i> Stock Reports</h2>
-          <p style="font-size: 12px; color: gray; margin-top: 0;">Select a report to view</p>
+      <!-- User info (filled after login) -->
+      <div class="sidebar-user">
+        <div class="sidebar-user-name" id="sidebar-username">—</div>
+        <div class="sidebar-user-meta" id="sidebar-usermeta">
+          Role: —<br>
+          Site: —
+        </div>
+      </div>
 
-          <button class="btn btn-primary" style="width: 100%; margin-bottom: 15px; font-size: 16px; padding: 15px; background-color: var(--secondary);" onclick="toggleBalanceReport()">
-            <i class="fa-solid fa-boxes-stacked"></i> Current Stock Balance
+      <nav class="sidebar-nav">
+        <button type="button" class="side-nav-item active" id="nav-dashboard"
+                onclick="goPage('dashboard')">
+          <i class="fa-solid fa-chart-pie"></i><span>Dashboard</span>
+        </button>
+
+        <button type="button" class="side-nav-item" id="nav-stock"
+                onclick="goPage('stock')">
+          <i class="fa-solid fa-box"></i><span>Stock</span>
+          <i class="fa-solid fa-chevron-down nav-chevron" id="stock-chevron"></i>
+        </button>
+        <div class="side-subnav" id="stock-subnav">
+          <button type="button" class="side-nav-item" id="nav-stock-inbound"
+                  onclick="goStockSub('inbound')">
+            <i class="fa-solid fa-dolly"></i><span>Inbound</span>
           </button>
+          <button type="button" class="side-nav-item" id="nav-stock-outbound"
+                  onclick="goStockSub('outbound')">
+            <i class="fa-solid fa-truck-fast"></i><span>Outbound</span>
+          </button>
+          <button type="button" class="side-nav-item" id="nav-stock-materials"
+                  onclick="goStockSub('materials')">
+            <i class="fa-solid fa-tags"></i><span>Materials</span>
+          </button>
+          <button type="button" class="side-nav-item" id="nav-stock-report"
+                  onclick="goStockSub('report')">
+            <i class="fa-solid fa-clipboard-list"></i><span>Report</span>
+          </button>
+        </div>
 
-          <div id="balance-report-section" style="display: none; border: 2px solid var(--secondary); border-radius: 15px; padding: 10px; margin-bottom: 15px; background: #fff;">
-            <h4 style="margin-top: 5px; text-align: center; color: var(--dark); border-bottom: 1px dashed #EEE; padding-bottom: 10px;">Balance Report</h4>
-            <div id="balance-report-container"></div>
+        <button type="button" class="side-nav-item" id="nav-refrigerator"
+                onclick="goPage('refrigerator')">
+          <i class="fa-solid fa-snowflake"></i><span>Refrigerator</span>
+        </button>
+
+        <button type="button" class="side-nav-item" id="nav-profile"
+                onclick="goPage('profile')">
+          <i class="fa-solid fa-circle-user"></i><span>Profile</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button type="button" class="side-nav-item" onclick="logout()">
+          <i class="fa-solid fa-right-from-bracket"></i><span>Log out</span>
+        </button>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-topbar">
+        <button type="button" class="topbar-menu-btn" id="topbar-menu-btn" title="Menu" aria-label="Open menu" onclick="toggleSidebar()">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="topbar-title" id="topbar-title">Home</div>
+        <div class="topbar-actions">
+          <button type="button" class="topbar-icon-btn" id="topbar-btn-edit"
+                  title="Edit Profile & Password" style="display:none;"
+                  onclick="topbarEditProfile()">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </button>
+          <button type="button" class="topbar-icon-btn" id="topbar-btn-adduser"
+                  title="Add New User" style="display:none;"
+                  onclick="topbarAddUser()">
+            <i class="fa-solid fa-user-plus"></i>
+          </button>
+          <button type="button" class="topbar-icon-btn" id="topbar-btn-notif" title="Notifications"
+                  onclick="toggleNotifPanel(event)">
+            <i class="fa-solid fa-bell"></i>
+            <span class="notif-badge" id="notif-badge">0</span>
+          </button>
+          <div class="topbar-user">
+            <div class="topbar-avatar" id="topbar-avatar">
+              <span id="topbar-avatar-initial">?</span>
+            </div>
+            <strong id="topbar-username">—</strong>
           </div>
+        </div>
+      </header>
 
-          <hr style="border:0; border-top:1px dashed #DDD; margin: 20px 0;">
-
-          <button class="btn btn-warning" style="width: 100%; margin-bottom: 10px; padding: 12px;" onclick="toggleReprintSection()">
-            <i class="fa-solid fa-print"></i> Reprint Stickers Menu
-          </button>
-
-          <div id="reprint-section" style="display: none; border: 2px dashed var(--warning); border-radius: 15px; padding: 15px; background: #fff;">
-            <p style="font-size: 12px; color: gray; text-align: center; margin-top: 0;">Print recent inbound labels</p>
-            <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px; background: var(--warning); color: var(--dark);" onclick="loadReprintBatches()">
-              <i class="fa-solid fa-rotate-right"></i> Load Recent Batches
+      <!-- Notifications panel -->
+      <div id="notif-panel" onclick="if(event.target===this)closeNotifPanel()">
+        <div class="notif-sheet" onclick="event.stopPropagation()">
+          <div class="notif-sheet-head">
+            <h3><i class="fa-solid fa-bell" style="color:var(--primary);"></i> Notifications</h3>
+            <button type="button" onclick="closeNotifPanel()" aria-label="Close">&times;</button>
+          </div>
+          <div class="notif-sheet-body" id="notif-list">
+            <div class="notif-empty">Loading...</div>
+          </div>
+          <div class="notif-sheet-foot">
+            <button type="button" onclick="loadNotifications(true)">
+              <i class="fa-solid fa-rotate"></i> Refresh
             </button>
-            <div id="reprint-list"></div>
+            <button type="button" class="primary" onclick="notifOpenReports()">
+              <i class="fa-solid fa-clipboard-list"></i> Reports
+            </button>
           </div>
         </div>
       </div>
 
-      <div id="stock-sub-inbound" class="stock-subpage" style="display:none;">
-        <div class="card">
-          <h2><i class="fa-solid fa-box-open"></i> Receive Inbound</h2>
-          <p style="font-size: 12px; color: gray; margin-top: 0;">Search item to receive</p>
-
-          <div class="autocomplete-wrapper">
-            <input type="text" id="inbound-item" class="input-styled" placeholder="Search Item Name or Code..." onkeyup="filterMaterial(this.value)" autocomplete="off">
-            <div id="autocomplete-list" class="autocomplete-items"></div>
-          </div>
-
-          <div id="selected-item-info" style="display:none; background:#f4f7f6; padding:15px; border-radius:15px; margin-bottom:15px; border-left: 5px solid var(--primary); align-items:center; gap: 15px;">
-            <img id="info-image" src="" title="Click to enlarge" style="width: 60px; height: 60px; border-radius: 10px; object-fit: cover; border: 2px solid var(--white); box-shadow: 0 2px 5px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.2s;">
-            <div style="flex: 1;">
-              <strong id="info-code" style="color:var(--dark);"></strong><br>
-              <span id="info-name" style="font-size:14px; font-weight:bold;"></span><br>
-              <small id="info-details" style="color:gray;"></small>
-            </div>
-          </div>
-
-          <label style="font-size: 12px; font-weight: bold; color: var(--dark);">Quantity</label>
-          <input type="text" id="inbound-qty" class="input-styled" placeholder="Tap to enter quantity" readonly onclick="openNumpad('inbound-qty')" style="background-color: #fff; font-size: 20px; font-weight: bold; text-align: center; color: var(--primary); cursor: pointer;">
-
-          <div id="inbound-qty-hint" style="font-size: 11px; color: var(--danger); margin-top: -5px; margin-bottom: 10px; font-weight: bold; display: none;"></div>
-
-          <label style="font-size: 12px; font-weight: bold; color: var(--dark);">BIN Location</label>
-          <input type="text" id="inbound-bin" class="input-styled" placeholder="BIN (e.g. A1)">
-
-          <label style="font-size: 12px; font-weight: bold; color: var(--dark);">Expiry Date</label>
-          <input type="date" id="inbound-exp" class="input-styled">
-
-          <button class="btn btn-primary" style="width: 100%; margin-top: 10px; font-size: 18px;" onclick="submitInbound()">
-            <i class="fa-solid fa-print"></i> Receive & Print Sticker
-          </button>
-        </div>
+      <div id="page-dashboard" class="page-content" style="display:none;">
+        <?!= include('page_dashboard'); ?>
       </div>
-
-      <div id="stock-sub-outbound" class="stock-subpage" style="display:none;">
-        <div class="card">
-          <h2><i class="fa-solid fa-truck-fast"></i> Outbound</h2>
-          <p style="font-size: 12px; color: gray; margin-top: 0;">Scan QR or Search to issue</p>
-
-          <div id="qr-reader-container" style="display:none; margin-bottom: 15px; border: 2px dashed var(--dark); border-radius: 15px; overflow: hidden; background: #fff;">
-            <div id="qr-reader" style="width:100%;"></div>
-            <button class="btn btn-warning" style="width:100%; border-radius: 0; border:none; padding:10px;" onclick="closeQRScanner()"><i class="fa-solid fa-xmark"></i> Cancel Scan</button>
-          </div>
-
-          <button class="btn btn-danger" id="btn-start-scan" style="width: 100%; margin-bottom: 15px; font-size: 16px; padding: 15px;" onclick="startQRScanner()">
-            <i class="fa-solid fa-camera"></i> Tap to Scan QR
-          </button>
-
-          <div style="text-align: center; margin-bottom: 15px; color: gray; font-size: 12px; font-weight: bold;">--- OR TYPE ---</div>
-
-          <div class="autocomplete-wrapper">
-            <input type="text" id="outbound-search" class="input-styled" placeholder="Batch ID or Item Code..." onkeyup="filterOutbound(this.value)" autocomplete="off">
-            <div id="outbound-autocomplete-list" class="autocomplete-items"></div>
-          </div>
-
-          <div id="outbound-selected-info" style="display:none; background:#fdfbf7; padding:15px; border-radius:15px; margin-bottom:15px; border-left: 5px solid var(--danger);">
-            <strong id="out-batch-id" style="color:var(--dark);"></strong><br>
-            <span id="out-item-code" style="font-size:14px; font-weight:bold;"></span><br>
-            <small id="out-details" style="color:gray;"></small><br>
-            <div style="margin-top: 5px; font-size: 14px; color: var(--primary); font-weight: bold;">
-              Available: <span id="out-available-qty"></span> <span id="out-uom"></span>
-            </div>
-          </div>
-
-          <label style="font-size: 12px; font-weight: bold; color: var(--dark);">Issue Quantity</label>
-          <input type="text" id="outbound-qty" class="input-styled" placeholder="Tap to enter quantity" readonly onclick="openNumpad('outbound-qty')" style="background-color: #fff; font-size: 20px; font-weight: bold; text-align: center; color: var(--danger); cursor: pointer;">
-
-          <button class="btn btn-danger" style="width: 100%; margin-top: 10px; font-size: 18px;" onclick="submitOutbound()">
-            <i class="fa-solid fa-check-to-slot"></i> Confirm Outbound
-          </button>
-        </div>
+      <div id="page-stock" class="page-content" style="display:none;">
+        <?!= include('page_stock'); ?>
       </div>
-
-      <div id="numpad-modal" class="modal-overlay" style="display:none;">
-        <div class="modal-content card" style="width: 90%; max-width: 350px; text-align: center;">
-          <h3 style="margin-top:0; color: var(--dark);">Enter Quantity</h3>
-
-          <div id="numpad-display" style="font-size: 32px; font-weight: bold; margin-bottom: 15px; padding: 10px; background: #f4f7f6; border-radius: 12px; color: var(--primary); min-height: 55px; display: flex; align-items: center; justify-content: center; border: 2px solid #EEE;">
-            0
-          </div>
-
-          <div class="numpad-grid">
-            <button class="numpad-btn" onclick="npAdd('1')">1</button>
-            <button class="numpad-btn" onclick="npAdd('2')">2</button>
-            <button class="numpad-btn" onclick="npAdd('3')">3</button>
-            <button class="numpad-btn" onclick="npAdd('4')">4</button>
-            <button class="numpad-btn" onclick="npAdd('5')">5</button>
-            <button class="numpad-btn" onclick="npAdd('6')">6</button>
-            <button class="numpad-btn" onclick="npAdd('7')">7</button>
-            <button class="numpad-btn" onclick="npAdd('8')">8</button>
-            <button class="numpad-btn" onclick="npAdd('9')">9</button>
-            <button class="numpad-btn" onclick="npReset()" style="color: var(--danger); font-size: 14px;"><i class="fa-solid fa-rotate-left"></i><br>Reset</button>
-            <button class="numpad-btn" onclick="npAdd('0')">0</button>
-            <button class="numpad-btn" style="visibility: hidden;"></button>
-          </div>
-
-          <div style="display: flex; gap: 10px; margin-top: 15px;">
-            <button class="btn btn-danger" style="flex: 1;" onclick="closeNumpad()">Cancel</button>
-            <button class="btn btn-success" style="flex: 1; background-color: var(--success); color: var(--dark);" onclick="confirmNumpad()">Confirm</button>
-          </div>
-        </div>
+      <div id="page-refrigerator" class="page-content" style="display:none;">
+        <?!= include('page_refrigerator'); ?>
       </div>
-
-    </div>
-
-    <!-- ============ PAGE: REFRIGERATOR ============ -->
-    <div id="page-refrigerator" class="page-content" style="display:none;">
-      <div class="card">
-        <h2><i class="fa-solid fa-snowflake"></i> Refrigerator System</h2>
-        <p style="color:gray; font-size:13px;">Temperature tracking and cold-chain items coming soon.</p>
+      <div id="page-profile" class="page-content" style="display:none;">
+        <?!= include('page_profile'); ?>
       </div>
     </div>
 
-    <!-- ============ PAGE: DASHBOARD ============ -->
-    <div id="page-dashboard" class="page-content" style="display:none;">
-      <div class="card" style="background: linear-gradient(135deg, var(--warning), var(--primary)); color:#fff; padding: 25px;">
-        <h2 style="margin:0;"><i class="fa-solid fa-hand-sparkles"></i> Hello Friend!</h2>
-        <p style="font-size:14px; margin-top:5px; opacity:0.9;">Welcome to Easy Stock Online PRO. Your warehouse monitoring dashboard is ready.</p>
-      </div>
-    </div>
-
-    <!-- ============ PAGE: PROFILE ============ -->
-    <div id="page-profile" class="page-content" style="display:none;">
-      <div class="card" style="text-align: center;">
-        <h2><i class="fa-solid fa-id-badge"></i> My Profile</h2>
-
-        <img id="prof-img-display" class="profile-header-img" src="" alt="Profile">
-
-        <h3 id="prof-name" style="margin-bottom: 5px; color: var(--primary);"></h3>
-        <p id="prof-role" style="margin: 5px 0; font-size: 14px; font-weight: bold;"></p>
-        <p id="prof-site" style="margin: 5px 0; font-size: 14px; color: gray;"></p>
-
-        <hr style="border:0; border-top:1px dashed #DDD; margin: 15px 0;">
-
-        <button class="btn btn-warning" style="width: 100%; margin-bottom: 10px;" onclick="toggleEditProfileSection()">
-          <i class="fa-solid fa-pen-to-square"></i> Edit Profile & Password
-        </button>
-
-        <div id="edit-profile-section" style="display: none; background: #fdfbf7; padding: 15px; border-radius: 15px; border: 2px dashed var(--warning); margin-bottom: 15px;">
-          <div style="text-align: left; margin-bottom: 10px;">
-            <label style="font-size: 12px; font-weight: bold; color: var(--dark);"><i class="fa-solid fa-camera"></i> Change Profile Picture</label>
-            <input type="file" id="my-new-img" class="input-styled" accept="image/*" style="padding: 8px;">
-          </div>
-
-          <div style="text-align: left; margin-bottom: 10px;">
-            <label style="font-size: 12px; font-weight: bold; color: var(--dark);"><i class="fa-solid fa-lock"></i> Change Password</label>
-            <input type="password" id="my-new-pwd" class="input-styled" placeholder="New Password (Optional)">
-          </div>
-
-          <button class="btn btn-primary" style="width: 100%;" onclick="updateMyProfile()"><i class="fa-solid fa-save"></i> Save My Profile</button>
-        </div>
-
-        <button class="btn btn-danger" style="width: 100%; margin-top: 10px;" onclick="logout()">
-          <i class="fa-solid fa-power-off"></i> Logout
-        </button>
-      </div>
-
-      <div class="card" id="manage-section" style="display: none; background-color: #fdfbf7;">
-        <h2><i class="fa-solid fa-users-gear"></i> Manage Users</h2>
-
-        <button class="btn btn-primary" style="width: 100%; margin-bottom: 15px;" onclick="toggleCreateUserSection()">
-          <i class="fa-solid fa-user-plus"></i> Add New User
-        </button>
-
-        <div id="create-user-section" style="display: none; background: var(--white); padding: 15px; border-radius: 15px; border: 2px solid var(--primary); margin-bottom: 20px;">
-          <h4>Create New User</h4>
-          <input type="text" id="new-user-usr" class="input-styled" placeholder="Username">
-          <input type="password" id="new-user-pwd" class="input-styled" placeholder="Password">
-          <input type="text" id="new-user-gn" class="input-styled" placeholder="First Name">
-          <input type="text" id="new-user-fn" class="input-styled" placeholder="Last Name">
-          <select id="new-user-role" class="input-styled"></select>
-          <input type="text" id="new-user-site" class="input-styled" placeholder="Site Name (Create Site)">
-          <button class="btn btn-primary" style="width: 100%;" onclick="createNewUser()"><i class="fa-solid fa-check"></i> Submit User</button>
-        </div>
-
-        <hr style="border:0; border-top:1px dashed #DDD; margin: 15px 0;">
-
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-          <h4 style="margin: 0;">User List</h4>
-        </div>
-
-        <input type="text" id="search-user-input" class="input-styled" placeholder="Search by name, username or role..." onkeyup="filterUsers()" style="margin-bottom: 15px;">
-
-        <div id="user-list"></div>
-      </div>
-    </div>
-
-    <!-- ============ NAV (MAIN) ============ -->
-    <div class="bottom-nav" id="main-bottom-nav">
-      <div class="nav-item" onclick="enterStockMode()" id="nav-stock">
-        <i class="fa-solid fa-box"></i><span>Stock</span>
-      </div>
-      <div class="nav-item" onclick="switchPage('refrigerator')" id="nav-refrigerator">
-        <i class="fa-solid fa-snowflake"></i><span>Fridge</span>
-      </div>
-      <div class="nav-item active" onclick="switchPage('dashboard')" id="nav-dashboard">
-        <i class="fa-solid fa-chart-pie"></i><span>Board</span>
-      </div>
-      <div class="nav-item" onclick="switchPage('profile')" id="nav-profile">
-        <i class="fa-solid fa-circle-user"></i><span>Profile</span>
-      </div>
-    </div>
-
-    <!-- ============ NAV (STOCK) ============ -->
-    <div class="bottom-nav" id="stock-bottom-nav" style="display: none; background: #e8f4f8;">
-      <div class="nav-item" onclick="switchStockSubpage('inbound')" id="nav-stock-inbound">
-        <i class="fa-solid fa-dolly"></i><span>Inbound</span>
-      </div>
-      <div class="nav-item" onclick="switchStockSubpage('outbound')" id="nav-stock-outbound">
-        <i class="fa-solid fa-truck-fast"></i><span>Outbound</span>
-      </div>
-      <div class="nav-item" onclick="switchStockSubpage('report')" id="nav-stock-report">
-        <i class="fa-solid fa-clipboard-list"></i><span>Report</span>
-      </div>
-      <div class="nav-item" onclick="exitStockMode()" id="nav-stock-exit">
-        <i class="fa-solid fa-house-chimney-window"></i><span>Main Menu</span>
-      </div>
-    </div>
-
+    <!-- Legacy IDs kept hidden so old JS never crashes -->
+    <div id="main-bottom-nav" style="display:none !important;"></div>
+    <div id="stock-bottom-nav" style="display:none !important;"></div>
   </div>
 
+  <?!= include('js'); ?>
+  <?!= include('js_reports'); ?>
+
   <script>
-  // ==========================================================
-  // ⚙️ CONFIG — แก้ URL ตรงนี้ทุกครั้งที่ Deploy ใหม่ใน Apps Script
-  // ==========================================================
-  const API_URL = 'https://script.google.com/macros/s/AKfycbxV4vTpMUR_J6Wx48MtO_90xpXybXaA5pyd6t1daxC3hxG_qXue8hHbhWiK8WYHIPeU/exec';
-
-  // เรียก backend (doPost) ด้วย action + payload
-  // ใช้ Content-Type: text/plain เพื่อให้เป็น "simple request" -> เลี่ยง CORS preflight ของ Apps Script
-  async function callApi(action, payload) {
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: action, payload: payload || {} }),
-      redirect: 'follow'
-    });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    return await res.json();
-  }
-
-  // ==========================================================
-  // GLOBAL STATE
-  // ==========================================================
-  let currentUser = null;
-  let allManagedUsers = [];
-  let masterDataList = [];
-  let selectedItemData = null;
-
-  // Numpad
-  let currentNumpadValue = '0';
-  let currentNumpadTarget = 'inbound-qty';
-
-  // Outbound
-  let availableOutboundBatches = [];
-  let selectedOutboundBatch = null;
-  let html5QrcodeScanner = null;
-
-  // ==========================================================
-  // SESSION RESTORE
-  // ==========================================================
-  window.onload = function() {
-    const savedUserId = localStorage.getItem('es_user_id');
-    if (savedUserId) {
-      Swal.fire({ title: 'Restoring Session...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-      callApi('validateSession', { userId: savedUserId })
-        .then(function(res) {
-          if (res.success) {
-            currentUser = res.user;
-            setupAppUI();
-            Swal.close();
-          } else {
-            localStorage.removeItem('es_user_id');
-            Swal.close();
-          }
-        })
-        .catch(function(err) {
-          Swal.fire({ icon: 'error', title: 'System Error', text: 'Session restoral failed: ' + err.message });
-        });
-    }
-  };
-
-  function doLogin() {
-    const usr = document.getElementById('login-usr').value;
-    const pwd = document.getElementById('login-pwd').value;
-    if (!usr || !pwd) return Swal.fire({ icon: 'warning', title: 'Oops!', text: 'Please enter Username & Password' });
-
-    Swal.fire({ title: 'Logging in...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-
-    callApi('checkLogin', { username: usr, password: pwd })
-      .then(function(res) {
-        if (res.success) {
-          currentUser = res.user;
-          localStorage.setItem('es_user_id', currentUser.id);
-          Swal.fire({ icon: 'success', title: 'Welcome!', text: 'Hello ' + currentUser.givenName, timer: 1500, showConfirmButton: false });
-          setupAppUI();
-        } else {
-          Swal.fire({ icon: 'error', title: 'Login Failed', text: res.message });
-        }
-      })
-      .catch(function(err) {
-        Swal.fire({ icon: 'error', title: 'System Error', text: 'Error in checkLogin: ' + err.message });
-      });
-  }
-
-  function setupAppUI() {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app-screen').style.display = 'block';
-
-    updateProfileHeaderDisplay();
-    document.getElementById('prof-name').innerText = currentUser.givenName + ' ' + currentUser.familyName;
-    document.getElementById('prof-role').innerText = 'Role: ' + currentUser.role.toUpperCase();
-    document.getElementById('prof-site').innerText = 'Site: ' + currentUser.site;
-
-    if (currentUser.role === 'superadmin' || currentUser.role === 'admin') {
-      document.getElementById('manage-section').style.display = 'block';
-      setupManagementForm();
-      loadManagedUsers();
-    } else {
-      document.getElementById('manage-section').style.display = 'none';
-    }
-
-    switchPage('dashboard');
-  }
-
-  function getAvatarUrl(name, imgUrl) {
-    if (imgUrl && imgUrl.trim() !== '') return imgUrl;
-    return 'https://ui-avatars.com/api/?name=' + encodeURIComponent(name) + '&background=FF9A8B&color=fff&size=150&rounded=true&font-family=JetBrains+Mono';
-  }
-
-  function updateProfileHeaderDisplay() {
-    const imgSrc = getAvatarUrl(currentUser.givenName, currentUser.image);
-    document.getElementById('prof-img-display').src = imgSrc;
-  }
-
-  // ==========================================================
-  // NAVIGATION
-  // ==========================================================
-  function switchPage(page) {
-    if (page !== 'stock') {
-      document.getElementById('main-bottom-nav').style.display = 'flex';
-      document.getElementById('stock-bottom-nav').style.display = 'none';
-    }
-
-    ['stock', 'refrigerator', 'dashboard', 'profile'].forEach(p => {
-      document.getElementById('page-' + p).style.display = 'none';
-      const navEl = document.getElementById('nav-' + p);
-      if (navEl) navEl.classList.remove('active');
-    });
-
-    document.getElementById('page-' + page).style.display = 'block';
-    const activeNav = document.getElementById('nav-' + page);
-    if (activeNav) activeNav.classList.add('active');
-  }
-
-  function enterStockMode() {
-    callApi('getMaterialMaster', { userSite: currentUser.site })
-      .then(function(res) { masterDataList = (res && res.data) ? res.data : []; })
-      .catch(function(err) { Swal.fire('Error', 'Failed to load materials: ' + err.message, 'error'); });
-
-    document.getElementById('main-bottom-nav').style.display = 'none';
-    document.getElementById('stock-bottom-nav').style.display = 'flex';
-    switchPage('stock');
-    switchStockSubpage('report');
-
-    const todayStr = new Date().toISOString().split('T')[0];
-    document.getElementById('inbound-exp').min = todayStr;
-  }
-
-  function exitStockMode() {
-    document.getElementById('stock-bottom-nav').style.display = 'none';
-    document.getElementById('main-bottom-nav').style.display = 'flex';
-    closeQRScanner();
-    switchPage('dashboard');
-  }
-
-  function switchStockSubpage(subpage) {
-    if (subpage !== 'outbound') {
-      closeQRScanner();
-    }
-
-    ['report', 'inbound', 'outbound'].forEach(p => {
-      document.getElementById('stock-sub-' + p).style.display = 'none';
-      document.getElementById('nav-stock-' + p).classList.remove('active');
-    });
-    document.getElementById('stock-sub-' + subpage).style.display = 'block';
-    document.getElementById('nav-stock-' + subpage).classList.add('active');
-
-    if (subpage === 'report') {
-      document.getElementById('balance-report-section').style.display = 'none';
-      document.getElementById('reprint-section').style.display = 'none';
-    } else if (subpage === 'outbound') {
-      loadOutboundBatches();
-    }
-  }
-
-  // ==========================================================
-  // TOGGLE & REPORT
-  // ==========================================================
-  function toggleBalanceReport() {
-    const sec = document.getElementById('balance-report-section');
-    if (sec.style.display === 'none') {
-      sec.style.display = 'block';
-      loadBalanceReport();
-    } else {
-      sec.style.display = 'none';
-    }
-  }
-
-  function toggleReprintSection() {
-    const sec = document.getElementById('reprint-section');
-    sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
-  }
-
-  function loadBalanceReport() {
-    const container = document.getElementById('balance-report-container');
-    container.innerHTML = '<p style="text-align:center; color:gray;"><i class="fa-solid fa-spinner fa-spin"></i> Loading stock levels...</p>';
-
-    callApi('getStockBalanceReport', { userSite: currentUser.site })
-      .then(function(res) {
-        if (res.success) {
-          renderBalanceReport(res.balances);
-        } else {
-          container.innerHTML = `<p style="text-align:center; color:var(--danger); font-weight:bold;">Warning: ${res.message}</p>`;
-        }
-      })
-      .catch(function(err) {
-        container.innerHTML = `<p style="text-align:center; color:var(--danger); font-weight:bold;">Failed to fetch report: ${err.message}</p>`;
-      });
-  }
-
-  function renderBalanceReport(balances) {
-    const container = document.getElementById('balance-report-container');
-    container.innerHTML = '';
-
-    if (!balances || balances.length === 0) {
-      container.innerHTML = '<p style="text-align:center; color:gray; font-size:14px; margin-top: 15px;"><i class="fa-solid fa-box-open" style="font-size:24px; display:block; margin-bottom:5px;"></i> No active stock items found.</p>';
-      return;
-    }
-
-    balances.forEach(b => {
-      const itemImgSrc = (b.image && b.image.trim() !== '') ? b.image : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(b.name) + '&background=eee&color=999';
-      container.innerHTML += `
-        <div class="user-list-item" style="padding: 12px 0;">
-          <div class="user-info-container">
-            <img src="${itemImgSrc}" class="user-avatar-img" style="border-radius:10px; border:1px solid #DDD;" onclick="showImage('${itemImgSrc}')" title="Click to enlarge">
-            <div>
-              <strong style="font-size: 14px; color: var(--dark);">${b.itemCode}</strong><br>
-              <small style="color: gray; font-weight:bold;">${b.name}</small>
-            </div>
-          </div>
-          <div style="text-align: right;">
-            <span style="font-size: 20px; font-weight: bold; color: var(--primary);">${b.totalQty}</span><br>
-            <small style="color:#888; font-weight:bold; font-size:11px;">${b.uom}</small>
-          </div>
-        </div>
-      `;
-    });
-  }
-
-  // ==========================================================
-  // NUMPAD
-  // ==========================================================
-  function openNumpad(targetId) {
-    currentNumpadTarget = targetId || 'inbound-qty';
-    currentNumpadValue = document.getElementById(currentNumpadTarget).value || '0';
-    document.getElementById('numpad-display').innerText = currentNumpadValue;
-    document.getElementById('numpad-modal').style.display = 'flex';
-  }
-
-  function closeNumpad() {
-    document.getElementById('numpad-modal').style.display = 'none';
-  }
-
-  function npAdd(numStr) {
-    if (currentNumpadValue === '0') {
-      currentNumpadValue = numStr;
-    } else {
-      currentNumpadValue += numStr;
-    }
-    document.getElementById('numpad-display').innerText = currentNumpadValue;
-  }
-
-  function npReset() {
-    currentNumpadValue = '0';
-    document.getElementById('numpad-display').innerText = currentNumpadValue;
-  }
-
-  function confirmNumpad() {
-    document.getElementById(currentNumpadTarget).value = currentNumpadValue === '0' ? '' : currentNumpadValue;
-    closeNumpad();
-  }
-
-  // ==========================================================
-  // INBOUND & AUTOCOMPLETE
-  // ==========================================================
-  function filterMaterial(val) {
-    const listContainer = document.getElementById('autocomplete-list');
-    listContainer.innerHTML = '';
-    selectedItemData = null;
-    document.getElementById('selected-item-info').style.display = 'none';
-    document.getElementById('inbound-qty-hint').style.display = 'none';
-    document.getElementById('inbound-qty').value = '';
-
-    if (!val) return false;
-
-    if (!masterDataList || masterDataList.length === 0) {
-      const itemDiv = document.createElement("div");
-      itemDiv.innerHTML = `<small style="color:var(--danger); font-weight:bold;">No items found!</small>`;
-      listContainer.appendChild(itemDiv);
-      return false;
-    }
-
-    const query = val.toLowerCase();
-    const matches = masterDataList.filter(m =>
-      String(m.itemCode).toLowerCase().includes(query) ||
-      String(m.itemName).toLowerCase().includes(query) ||
-      String(m.category).toLowerCase().includes(query)
-    );
-
-    if (matches.length === 0) {
-      const itemDiv = document.createElement("div");
-      itemDiv.innerHTML = `<small style="color:gray;">No match found...</small>`;
-      listContainer.appendChild(itemDiv);
-      return false;
-    }
-
-    matches.slice(0, 10).forEach(m => {
-      const itemDiv = document.createElement("div");
-      const imgSrc = (m.image && m.image.trim() !== '') ? m.image : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(m.itemName) + '&background=eee&color=999';
-
-      itemDiv.innerHTML = `
-        <div class="autocomplete-flex">
-          <img src="${imgSrc}" class="autocomplete-thumb" onerror="this.src='https://ui-avatars.com/api/?name=X&background=eee&color=999'">
-          <div>
-            <strong>${m.itemCode}</strong>: ${m.itemName} <br>
-            <small style="color:gray;">CAT: ${m.category} | LOT: ${m.lotSize} ${m.uom}</small>
-          </div>
-        </div>
-      `;
-
-      itemDiv.onclick = function() {
-        document.getElementById('inbound-item').value = m.itemCode;
-        selectedItemData = m;
-
-        const imgEl = document.getElementById('info-image');
-        imgEl.src = imgSrc;
-        imgEl.onclick = function() { showImage(imgSrc); };
-
-        document.getElementById('info-code').innerText = m.itemCode;
-        document.getElementById('info-name').innerText = m.itemName;
-        document.getElementById('info-details').innerText = `Lot Size: ${m.lotSize} ${m.uom} | Cat: ${m.category}`;
-        document.getElementById('selected-item-info').style.display = 'flex';
-
-        document.getElementById('inbound-qty-hint').innerText = `* Qty must be a multiple of ${m.lotSize} ${m.uom}`;
-        document.getElementById('inbound-qty-hint').style.display = 'block';
-
-        document.getElementById('inbound-bin').value = m.defaultBin || '';
-
-        if (m.daysToExpiry && parseInt(m.daysToExpiry) > 0) {
-          const expDate = new Date();
-          expDate.setDate(expDate.getDate() + parseInt(m.daysToExpiry));
-          document.getElementById('inbound-exp').value = expDate.toISOString().split('T')[0];
-        } else {
-          document.getElementById('inbound-exp').value = '';
-        }
-        listContainer.innerHTML = '';
-      };
-      listContainer.appendChild(itemDiv);
-    });
-  }
-
-  function submitInbound() {
-    if (!selectedItemData) return Swal.fire('Oops!', 'Please search and select an Item first.', 'warning');
-    const qty = document.getElementById('inbound-qty').value;
-    const bin = document.getElementById('inbound-bin').value;
-    const expDate = document.getElementById('inbound-exp').value;
-    if (!qty || !expDate) { return Swal.fire('Missing Data', 'Please fill Quantity and Expiry Date', 'warning'); }
-
-    const inputQtyNum = Number(qty);
-    const lotSizeNum = Number(selectedItemData.lotSize);
-    if (lotSizeNum > 0 && (inputQtyNum % lotSizeNum !== 0)) {
-      return Swal.fire({ icon: 'error', title: 'Invalid Quantity!', html: `Quantity must be a multiple of <b>${lotSizeNum} ${selectedItemData.uom}</b>.<br><br>You entered: <b style="color:var(--danger);">${inputQtyNum}</b>` });
-    }
-
-    Swal.fire({ title: 'Receiving Item...', didOpen: () => { Swal.showLoading(); } });
-    const data = { itemCode: selectedItemData.itemCode, qty: inputQtyNum, bin: bin, expDate: expDate };
-
-    callApi('receiveInboundItem', { userInfo: currentUser, data: data })
-      .then(function(res) {
-        if (res.success) {
-          document.getElementById('inbound-item').value = ''; document.getElementById('inbound-qty').value = ''; document.getElementById('inbound-exp').value = ''; document.getElementById('inbound-bin').value = '';
-          document.getElementById('selected-item-info').style.display = 'none'; document.getElementById('inbound-qty-hint').style.display = 'none';
-          selectedItemData = null;
-          Swal.fire({ icon: 'success', title: 'Received Successfully!', text: 'Generating Sticker...', timer: 1500, showConfirmButton: false }).then(() => {
-            generateAndPrintSticker(res.batchData.batchId, res.batchData.itemCode, res.batchData.expDate, res.batchData.rcvBy, res.batchData.ReceiveDate);
-          });
-        } else { Swal.fire('Error', res.message, 'error'); }
-      })
-      .catch(function(err) { Swal.fire('System Error', 'Failed to save inbound: ' + err.message, 'error'); });
-  }
-
-  function loadReprintBatches() {
-    Swal.fire({ title: 'Loading...', didOpen: () => { Swal.showLoading(); } });
-    callApi('getRecentBatches', { site: currentUser.site })
-      .then(function(batches) {
-        Swal.close();
-        const list = document.getElementById('reprint-list');
-        list.innerHTML = '';
-        if (!batches || batches.length === 0) { list.innerHTML = '<p style="text-align:center; color:#888;">No recent batches found.</p>'; return; }
-        batches.forEach(b => {
-          let dbDate = b.ReceiveDate || b.receiveDate || '-';
-          if (typeof dbDate === 'string' && dbDate.includes('T')) {
-            let d = new Date(dbDate);
-            let dd = String(d.getDate()).padStart(2, '0'); let mm = String(d.getMonth() + 1).padStart(2, '0'); let yy = String(d.getFullYear()).slice(-2);
-            dbDate = `${dd}/${mm}/${yy}`;
-          }
-          list.innerHTML += `
-            <div class="user-list-item">
-              <div><strong>${b.itemCode}</strong> (Qty: ${b.qty})<br><small style="color: gray;">BAT: ${b.batchId}<br>EXP: ${b.expDate} | RCV: ${dbDate}</small></div>
-              <button class="btn btn-warning" onclick="generateAndPrintSticker('${b.batchId}', '${b.itemCode}', '${b.expDate}', '${currentUser.username}', '${dbDate}')"><i class="fa-solid fa-print"></i></button>
-            </div>
-          `;
-        });
-      })
-      .catch(function(err) { Swal.fire('Error', 'Failed to load batches: ' + err.message, 'error'); });
-  }
-
-  function generateAndPrintSticker(batchId, itemCode, expDate, rcvBy, receiveDate) {
-    const printArea = document.getElementById('print-sticker-area') || document.getElementById('print-area');
-    let finalDate = "-";
-    if (receiveDate && receiveDate !== "undefined" && receiveDate !== "null" && receiveDate !== "") { finalDate = receiveDate; }
-    const qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(itemCode);
-    printArea.innerHTML = `
-      <div style="display: flex; flex-direction: column; align-items: center; justify-content: space-evenly; width: 100%; height: 100%; padding: 1.5mm 0; box-sizing: border-box; font-family: 'JetBrains Mono', monospace; background: white; text-align: center;">
-        <div style="font-size: 8px; font-weight: bold; line-height: 1;">${batchId}</div>
-        <div style="font-size: 8px; font-weight: bold; line-height: 1;">EXP: ${expDate}</div>
-        <div style="font-size: 8px; font-weight: bold; line-height: 1;">${rcvBy}</div>
-        <img src="${qrUrl}" style="width: 1.2cm; height: 1.2cm; object-fit: contain; margin: 0.5mm 0;" />
-        <div style="font-size: 9px; font-weight: bold; line-height: 1;">${itemCode}</div>
-        <div style="font-size: 8px; font-weight: bold; line-height: 1;">RCV: ${finalDate}</div>
-      </div>
-    `;
-    setTimeout(() => { window.print(); }, 500);
-  }
-
-  // ==========================================================
-  // OUTBOUND
-  // ==========================================================
-  function loadOutboundBatches() {
-    callApi('getAvailableBatchesForOutbound', { userSite: currentUser.site })
-      .then(function(res) {
-        if (res.success) availableOutboundBatches = res.batches;
-      })
-      .catch(function(err) { console.error("Failed to load outbound batches", err); });
-  }
-
-  function startQRScanner() {
-    document.getElementById('qr-reader-container').style.display = 'block';
-    document.getElementById('btn-start-scan').style.display = 'none';
-    if (!html5QrcodeScanner) {
-      html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 });
-      html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-    }
-  }
-
-  function closeQRScanner() {
-    if (html5QrcodeScanner) {
-      html5QrcodeScanner.clear().then(() => { html5QrcodeScanner = null; }).catch(e => { console.error(e); });
-    }
-    const qrContainer = document.getElementById('qr-reader-container');
-    const btnStart = document.getElementById('btn-start-scan');
-    if (qrContainer) qrContainer.style.display = 'none';
-    if (btnStart) btnStart.style.display = 'block';
-  }
-
-  function onScanSuccess(decodedText, decodedResult) {
-    closeQRScanner();
-    const searchInput = document.getElementById('outbound-search');
-
-    if (searchInput) {
-      searchInput.value = decodedText;
-      filterOutbound(decodedText);
-      Swal.fire({ icon: 'success', title: 'Scanned!', text: 'Code: ' + decodedText, timer: 1000, showConfirmButton: false });
-    } else {
-      console.error("Missing element ID: outbound-search");
-      Swal.fire('System Error', 'ไม่พบช่องค้นหา ID: outbound-search กรุณารีเฟรชหน้าเว็บ', 'error');
-    }
-  }
-
-  function onScanFailure(error) { /* ไม่ต้องแจ้งเตือนทุกเฟรม */ }
-
-  function filterOutbound(val) {
-    const listContainer = document.getElementById('outbound-autocomplete-list');
-    listContainer.innerHTML = '';
-    selectedOutboundBatch = null;
-    document.getElementById('outbound-selected-info').style.display = 'none';
-    document.getElementById('outbound-qty').value = '';
-
-    if (!val) return false;
-    const query = val.toLowerCase();
-
-    const matches = availableOutboundBatches.filter(b =>
-      String(b.batchId).toLowerCase().includes(query) ||
-      String(b.itemCode).toLowerCase().includes(query) ||
-      String(b.itemName).toLowerCase().includes(query)
-    );
-
-    matches.slice(0, 10).forEach(b => {
-      const itemDiv = document.createElement("div");
-      itemDiv.innerHTML = `
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <div><strong>${b.itemCode}</strong> <br><small style="color:gray;">BAT: ${b.batchId}</small></div>
-          <div style="text-align:right; color:var(--primary); font-weight:bold;">${b.qty} <small>${b.uom}</small></div>
-        </div>`;
-
-      itemDiv.onclick = function() {
-        document.getElementById('outbound-search').value = b.batchId;
-        selectedOutboundBatch = b;
-
-        document.getElementById('out-batch-id').innerText = "BAT: " + b.batchId;
-        document.getElementById('out-item-code').innerText = b.itemCode + " - " + b.itemName;
-        document.getElementById('out-details').innerText = `BIN: ${b.bin} | EXP: ${b.expDate}`;
-        document.getElementById('out-available-qty').innerText = b.qty;
-        document.getElementById('out-uom').innerText = b.uom;
-
-        document.getElementById('outbound-selected-info').style.display = 'block';
-        listContainer.innerHTML = '';
-      };
-      listContainer.appendChild(itemDiv);
-    });
-  }
-
-  function submitOutbound() {
-    if (!selectedOutboundBatch) return Swal.fire('Oops!', 'Please scan or select a batch to issue.', 'warning');
-    const qty = document.getElementById('outbound-qty').value;
-    if (!qty) return Swal.fire('Missing Data', 'Please enter issue quantity', 'warning');
-
-    const issueQtyNum = Number(qty);
-    if (issueQtyNum <= 0 || issueQtyNum > selectedOutboundBatch.qty) {
-      return Swal.fire('Invalid Quantity', `Cannot issue ${issueQtyNum}. Available stock is ${selectedOutboundBatch.qty}`, 'error');
-    }
-
-    Swal.fire({ title: 'Processing...', didOpen: () => { Swal.showLoading(); } });
-    const data = { batchId: selectedOutboundBatch.batchId, qty: issueQtyNum };
-
-    callApi('processOutboundTransaction', { userInfo: currentUser, data: data })
-      .then(function(res) {
-        if (res.success) {
-          document.getElementById('outbound-search').value = '';
-          document.getElementById('outbound-qty').value = '';
-          document.getElementById('outbound-selected-info').style.display = 'none';
-          selectedOutboundBatch = null;
-          loadOutboundBatches();
-          Swal.fire('Success', 'Issued successfully!', 'success');
-        } else Swal.fire('Error', res.message, 'error');
-      })
-      .catch(function(err) { Swal.fire('System Error', err.message, 'error'); });
-  }
-
-  // ==========================================================
-  // PROFILE & MANAGEMENT
-  // ==========================================================
-  function toggleEditProfileSection() { document.getElementById('edit-profile-section').style.display = document.getElementById('edit-profile-section').style.display === 'none' ? 'block' : 'none'; }
-  function toggleCreateUserSection() { document.getElementById('create-user-section').style.display = document.getElementById('create-user-section').style.display === 'none' ? 'block' : 'none'; }
-
-  function updateMyProfile() {
-    const newPwd = document.getElementById('my-new-pwd').value;
-    const fileInput = document.getElementById('my-new-img');
-    const file = fileInput.files[0];
-
-    if (!newPwd && !file) return Swal.fire('Notice', 'Nothing to update.', 'info');
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) return Swal.fire('Error', 'File must not exceed 5MB', 'error');
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const dataUrl = e.target.result;
-        executeProfileUpdate(newPwd, dataUrl.split(',')[1], dataUrl.split(';')[0].split(':')[1]);
-      };
-      reader.readAsDataURL(file);
-    } else executeProfileUpdate(newPwd, null, null);
-  }
-
-  function executeProfileUpdate(pwd, base64, mime) {
-    Swal.fire({ title: 'Updating...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-    callApi('updateMyProfile', { userId: currentUser.id, newPassword: pwd, base64Data: base64, mimeType: mime })
-      .then(function(res) {
-        if (res.success) {
-          Swal.fire({ icon: 'success', title: 'Success', text: res.message });
-          document.getElementById('my-new-pwd').value = ''; document.getElementById('my-new-img').value = '';
-          toggleEditProfileSection();
-          if (res.newImage) { currentUser.image = res.newImage; updateProfileHeaderDisplay(); }
-        } else Swal.fire({ icon: 'error', title: 'Error', text: res.message });
-      })
-      .catch(function(err) { Swal.fire('System Error', 'Profile update failed: ' + err.message, 'error'); });
-  }
-
-  function logout() {
-    currentUser = null; localStorage.removeItem('es_user_id');
-    document.getElementById('app-screen').style.display = 'none'; document.getElementById('login-screen').style.display = 'flex';
-    document.getElementById('login-pwd').value = '';
-  }
-
-  function setupManagementForm() {
-    const roleSelect = document.getElementById('new-user-role');
-    const siteInput = document.getElementById('new-user-site');
-    roleSelect.innerHTML = '';
-    if (currentUser.role === 'superadmin') {
-      roleSelect.innerHTML = '<option value="admin">Admin</option>'; siteInput.style.display = 'block';
-    } else if (currentUser.role === 'admin') {
-      roleSelect.innerHTML = '<option value="mt">MT</option><option value="staff">Staff</option><option value="viewer">Viewer</option>'; siteInput.style.display = 'none';
-    }
-  }
-
-  function loadManagedUsers() {
-    callApi('getManagedUsers', { managerRole: currentUser.role, managerSite: currentUser.site })
-      .then(function(users) { allManagedUsers = users || []; renderUserList(allManagedUsers); })
-      .catch(function(err) { Swal.fire('Error', 'Failed to load users: ' + err.message, 'error'); });
-  }
-
-  function renderUserList(usersToRender) {
-    const list = document.getElementById('user-list');
-    list.innerHTML = '';
-    if (usersToRender.length === 0) { list.innerHTML = '<p style="text-align: center; color: #888;">No users found.</p>'; return; }
-
-    usersToRender.forEach(u => {
-      const isChecked = u.status === 'ACTIVE' ? 'checked' : '';
-      const dis = currentUser.id === u.id ? 'disabled' : '';
-      const avatarSrc = getAvatarUrl(u.name, u.image);
-      list.innerHTML += `
-        <div class="user-list-item">
-          <div class="user-info-container">
-            <img src="${avatarSrc}" class="user-avatar-img" onclick="showImage('${avatarSrc}')">
-            <div><strong style="font-size: 14px;">${u.name}</strong><br><small style="color: #888;">@${u.user} (${u.role})<br><i class="fa-solid fa-location-dot"></i> ${u.site}</small></div>
-          </div>
-          <div>
-            <button class="btn btn-warning" onclick="resetPwd('${u.id}', ${u.row})" style="margin-right: 5px;"><i class="fa-solid fa-key"></i></button>
-            <label class="switch"><input type="checkbox" ${isChecked} ${dis} onchange="toggleStatus('${u.id}', '${u.status}', ${u.row})"><span class="slider"></span></label>
-          </div>
-        </div>
-      `;
-    });
-  }
-
-  function filterUsers() {
-    const query = document.getElementById('search-user-input').value.toLowerCase();
-    const filteredUsers = allManagedUsers.filter(u => u.name.toLowerCase().includes(query) || u.user.toLowerCase().includes(query) || u.role.toLowerCase().includes(query));
-    renderUserList(filteredUsers);
-  }
-
-  function showImage(url) { Swal.fire({ imageUrl: url, showConfirmButton: false, customClass: { image: 'swal-custom-image' }, backdrop: `rgba(0,0,0,0.85)` }); }
-
-  function createNewUser() {
-    const u = document.getElementById('new-user-usr').value, p = document.getElementById('new-user-pwd').value;
-    const gn = document.getElementById('new-user-gn').value, fn = document.getElementById('new-user-fn').value;
-    const role = document.getElementById('new-user-role').value; let site = currentUser.site;
-
-    if (currentUser.role === 'superadmin') {
-      site = document.getElementById('new-user-site').value; if (!site) return Swal.fire('Oops', 'Please enter a Site name', 'warning');
-    }
-    if (!u || !p || !gn) return Swal.fire('Oops', 'Please fill required fields', 'warning');
-
-    Swal.fire({ title: 'Creating...', didOpen: () => { Swal.showLoading(); } });
-    callApi('createUser', { managerInfo: currentUser, newUser: { username: u, password: p, givenName: gn, familyName: fn, role: role, site: site } })
-      .then(function(res) {
-        if (res.success) {
-          Swal.fire({ icon: 'success', title: 'Result', text: res.message });
-          ['new-user-usr', 'new-user-pwd', 'new-user-gn', 'new-user-fn'].forEach(id => document.getElementById(id).value = '');
-          toggleCreateUserSection(); loadManagedUsers();
-        } else Swal.fire({ icon: 'error', title: 'Result', text: res.message });
-      })
-      .catch(function(err) { Swal.fire('Error', 'Failed to create user: ' + err.message, 'error'); });
-  }
-
-  function toggleStatus(id, currentStatus, row) {
-    callApi('toggleUserStatus', { managerInfo: currentUser, targetId: id, currentStatus: currentStatus, targetRow: row })
-      .then(function(res) { if (!res.success) Swal.fire('Error', res.message, 'error'); loadManagedUsers(); })
-      .catch(function(err) { Swal.fire('Error', 'Failed to toggle status: ' + err.message, 'error'); });
-  }
-
-  function resetPwd(id, row) {
-    Swal.fire({ title: 'Reset Password', input: 'password', showCancelButton: true, confirmButtonText: 'Reset' }).then((result) => {
-      if (result.isConfirmed && result.value) {
-        Swal.fire({ title: 'Resetting...', didOpen: () => { Swal.showLoading(); } });
-        callApi('resetUserPassword', { managerInfo: currentUser, targetId: id, targetRow: row, newPassword: result.value })
-          .then(function(res) { Swal.fire('Success', res.message, 'success'); })
-          .catch(function(err) { Swal.fire('Error', 'Failed to reset password: ' + err.message, 'error'); });
+  /* =========================================================
+     1) ENERGY CORE animation + login toggle
+     2) Navigation that actually shows page content
+     ========================================================= */
+  (function() {
+    // ---------- Energy Core ----------
+    var canvas = document.getElementById('energy-canvas');
+    if (canvas) {
+      var ctx = canvas.getContext('2d');
+      var W, H, CX, CY, baseScale, time = 0;
+      var formOpen = false;
+      var loginScreen = document.getElementById('login-screen');
+
+      function resize() {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+        CX = W / 2; CY = H / 2;
+        baseScale = Math.min(W, H) * 0.22;
       }
-    });
-  }
+      window.addEventListener('resize', resize);
+      resize();
+
+      function project(x, y, z) {
+        var fov = 380, pz = z + fov;
+        if (pz < 8) pz = 8;
+        var f = fov / pz;
+        return { x: CX + x * f, y: CY + y * f, s: Math.max(0.08, f) };
+      }
+
+      function drawCore(scale, breath) {
+        var r = scale * (0.85 + breath * 0.06);
+        for (var i = 5; i >= 0; i--) {
+          var gr = r * (1.8 + i * 0.35);
+          var g = ctx.createRadialGradient(CX, CY, r * 0.3, CX, CY, gr);
+          g.addColorStop(0, 'rgba(0,180,255,' + (0.04 + (5 - i) * 0.015) + ')');
+          g.addColorStop(0.5, 'rgba(0,100,220,' + (0.02 + (5 - i) * 0.008) + ')');
+          g.addColorStop(1, 'rgba(0,0,0,0)');
+          ctx.beginPath(); ctx.arc(CX, CY, gr, 0, Math.PI * 2);
+          ctx.fillStyle = g; ctx.fill();
+        }
+        var body = ctx.createRadialGradient(CX - r * 0.2, CY - r * 0.25, r * 0.05, CX, CY, r);
+        body.addColorStop(0, 'rgba(200,255,255,0.98)');
+        body.addColorStop(0.2, 'rgba(0,230,255,0.9)');
+        body.addColorStop(0.45, 'rgba(0,140,255,0.65)');
+        body.addColorStop(0.75, 'rgba(0,60,180,0.3)');
+        body.addColorStop(1, 'rgba(0,20,60,0.05)');
+        ctx.beginPath(); ctx.arc(CX, CY, r, 0, Math.PI * 2);
+        ctx.fillStyle = body; ctx.fill();
+
+        var core = ctx.createRadialGradient(CX, CY, 0, CX, CY, r * 0.4);
+        core.addColorStop(0, 'rgba(255,255,255,0.95)');
+        core.addColorStop(0.35, 'rgba(150,255,255,0.7)');
+        core.addColorStop(1, 'rgba(0,180,255,0)');
+        ctx.beginPath(); ctx.arc(CX, CY, r * 0.4, 0, Math.PI * 2);
+        ctx.fillStyle = core; ctx.fill();
+
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        var band = ctx.createLinearGradient(CX - r * 1.4, CY, CX + r * 1.4, CY);
+        band.addColorStop(0, 'rgba(0,180,255,0)');
+        band.addColorStop(0.3, 'rgba(80,220,255,0.25)');
+        band.addColorStop(0.5, 'rgba(180,255,255,0.45)');
+        band.addColorStop(0.7, 'rgba(80,220,255,0.25)');
+        band.addColorStop(1, 'rgba(0,180,255,0)');
+        ctx.fillStyle = band;
+        ctx.fillRect(CX - r * 1.4, CY - r * 0.07, r * 2.8, r * 0.14);
+        ctx.restore();
+      }
+
+      function GyroRing(radius, axis, speed, thickness, hue, nodes) {
+        this.radius = radius; this.axis = axis; this.speed = speed;
+        this.thickness = thickness; this.hue = hue; this.nodes = nodes || 16;
+        this.angle = Math.random() * Math.PI * 2;
+        this.lightPos = Math.random();
+        this.lightSpeed = 0.28 + Math.random() * 0.4;
+      }
+      GyroRing.prototype.update = function(dt) {
+        this.angle += this.speed * dt;
+        this.lightPos = (this.lightPos + this.lightSpeed * dt) % 1;
+      };
+      GyroRing.prototype.draw = function(scale, breath) {
+        var r = this.radius * scale * (1 + breath * 0.02);
+        var pts = [], segs = 64, i, a, x, y, z, c, s, tilt, ty, tz;
+        for (i = 0; i <= segs; i++) {
+          a = (i / segs) * Math.PI * 2;
+          if (this.axis === 'y') {
+            x = Math.cos(a) * r; y = 0; z = Math.sin(a) * r;
+            c = Math.cos(this.angle); s = Math.sin(this.angle);
+            var nx = x * c - z * s; z = x * s + z * c; x = nx;
+          } else if (this.axis === 'x') {
+            x = 0; y = Math.cos(a) * r; z = Math.sin(a) * r;
+            c = Math.cos(this.angle); s = Math.sin(this.angle);
+            var ny = y * c - z * s; z = y * s + z * c; y = ny;
+          } else {
+            x = Math.cos(a + this.angle) * r;
+            y = Math.sin(a + this.angle) * r; z = 0;
+          }
+          tilt = Math.sin(time * 0.25 + this.radius) * 0.09;
+          ty = y * Math.cos(tilt) - z * Math.sin(tilt);
+          tz = y * Math.sin(tilt) + z * Math.cos(tilt);
+          pts.push(project(x, ty, tz));
+        }
+        ctx.beginPath();
+        pts.forEach(function(p, idx) { idx === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y); });
+        ctx.closePath();
+        ctx.strokeStyle = 'hsla(' + this.hue + ',90%,65%,0.22)';
+        ctx.lineWidth = this.thickness * 0.7;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+
+        for (var n = 0; n < this.nodes; n++) {
+          var idx = Math.floor((n / this.nodes) * segs);
+          var p = pts[idx];
+          var pulse = 0.7 + Math.sin(time * 2.5 + n * 0.8) * 0.3;
+          var size = Math.max(0.8, 1.6 * pulse * p.s);
+          ctx.beginPath(); ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+          ctx.fillStyle = 'hsla(' + (this.hue + 15) + ',100%,75%,0.85)';
+          ctx.shadowColor = 'hsla(' + this.hue + ',100%,70%,0.7)';
+          ctx.shadowBlur = 8; ctx.fill();
+        }
+        ctx.shadowBlur = 0;
+        var lightIdx = Math.floor(this.lightPos * segs);
+        for (var t = 0; t < 12; t++) {
+          var li = (lightIdx - t + segs) % segs;
+          var lp = pts[li];
+          var intensity = 1 - t / 12;
+          var sz = Math.max(0.6, (1.2 + intensity * 2.8) * lp.s);
+          ctx.beginPath(); ctx.arc(lp.x, lp.y, sz, 0, Math.PI * 2);
+          ctx.fillStyle = 'hsla(' + (this.hue + intensity * 30) + ',100%,' + (55 + intensity * 30) + '%,' + (0.15 + intensity * 0.8) + ')';
+          ctx.shadowColor = 'hsla(' + this.hue + ',100%,70%,' + (intensity * 0.85) + ')';
+          ctx.shadowBlur = 6 + intensity * 12; ctx.fill();
+        }
+        ctx.shadowBlur = 0;
+      };
+
+      var rings = [
+        new GyroRing(1.15, 'y', 0.48, 2.2, 175, 20),
+        new GyroRing(1.55, 'y', -0.32, 1.8, 195, 16),
+        new GyroRing(1.15, 'x', 0.38, 2.1, 210, 18),
+        new GyroRing(1.55, 'x', -0.42, 1.7, 165, 14),
+        new GyroRing(1.15, 'z', 0.55, 2.0, 185, 16),
+        new GyroRing(1.65, 'z', -0.28, 1.6, 220, 12)
+      ];
+
+      function Particle() { this.reset(true); }
+      Particle.prototype.reset = function(init) {
+        this.theta = Math.random() * Math.PI * 2;
+        this.phi = Math.acos(2 * Math.random() - 1);
+        this.r = 1.7 + Math.random() * 1.6;
+        this.speed = 0.15 + Math.random() * 0.45;
+        this.size = 0.9 + Math.random() * 2.0;
+        this.life = init ? Math.random() * 6 : 0;
+        this.maxLife = 5 + Math.random() * 7;
+        this.hue = 155 + Math.random() * 80;
+      };
+      Particle.prototype.update = function(dt) {
+        this.theta += this.speed * dt * 0.35;
+        this.life += dt;
+        if (this.life > this.maxLife) this.reset();
+      };
+      Particle.prototype.draw = function(scale) {
+        var alpha = this.life < 0.6 ? this.life / 0.6 :
+                    this.life > this.maxLife - 0.9 ? (this.maxLife - this.life) / 0.9 : 1;
+        var x = Math.sin(this.phi) * Math.cos(this.theta) * this.r * scale;
+        var y = Math.cos(this.phi) * this.r * scale * 0.55;
+        var z = Math.sin(this.phi) * Math.sin(this.theta) * this.r * scale;
+        var p = project(x, y, z);
+        var r = Math.max(0.5, this.size * p.s);
+        ctx.globalAlpha = alpha * 0.65;
+        ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+        ctx.fillStyle = 'hsla(' + this.hue + ',100%,75%,1)';
+        ctx.shadowColor = 'hsla(' + this.hue + ',100%,70%,0.7)';
+        ctx.shadowBlur = 8; ctx.fill();
+        ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+      };
+      var particles = [];
+      for (var pi = 0; pi < 40; pi++) particles.push(new Particle());
+
+      function toggleForm() {
+        formOpen = !formOpen;
+        if (formOpen) {
+          loginScreen.classList.add('form-open');
+          setTimeout(function() {
+            var u = document.getElementById('login-usr');
+            if (u) u.focus();
+          }, 300);
+        } else {
+          loginScreen.classList.remove('form-open');
+        }
+      }
+
+      canvas.addEventListener('click', toggleForm);
+      var closeBtn = document.getElementById('login-close-btn');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          if (formOpen) toggleForm();
+        });
+      }
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && formOpen) toggleForm();
+      });
+
+      var last = performance.now();
+      function frame(now) {
+        if (loginScreen.style.display === 'none') return;
+        var dt = Math.min((now - last) / 1000, 0.05);
+        last = now; time += dt;
+        var breath = Math.sin(time * 0.9) * 0.5 + 0.5;
+        var scale = baseScale;
+        ctx.clearRect(0, 0, W, H);
+        var bg = ctx.createRadialGradient(CX, CY, 0, CX, CY, Math.max(W, H) * 0.7);
+        bg.addColorStop(0, 'rgba(0,20,45,0.2)');
+        bg.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+        particles.forEach(function(p) { p.update(dt); p.draw(scale); });
+        rings.forEach(function(r) { r.update(dt); r.draw(scale, breath); });
+        drawCore(scale, breath);
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    // ---------- Navigation (reliable) ----------
+    var PAGE_TITLES = {
+      dashboard: 'Home',
+      stock: 'Stock',
+      refrigerator: 'Refrigerator',
+      profile: 'Profile'
+    };
+
+    function setActiveNav(page, stockSub) {
+      document.querySelectorAll('.side-nav-item').forEach(function(el) {
+        el.classList.remove('active');
+      });
+      var subnav = document.getElementById('stock-subnav');
+      if (page === 'stock') {
+        if (subnav) subnav.classList.add('open');
+        var sb = document.getElementById('nav-stock');
+        if (sb) sb.classList.add('active');
+        if (stockSub) {
+          var sub = document.getElementById('nav-stock-' + stockSub);
+          if (sub) sub.classList.add('active');
+        }
+      } else {
+        if (subnav) subnav.classList.remove('open');
+        var btn = document.getElementById('nav-' + page);
+        if (btn) btn.classList.add('active');
+      }
+      var title = document.getElementById('topbar-title');
+      if (title) title.textContent = PAGE_TITLES[page] || page;
+    }
+
+    function showPage(page) {
+      ['dashboard', 'stock', 'refrigerator', 'profile'].forEach(function(p) {
+        var el = document.getElementById('page-' + p);
+        if (el) el.style.display = 'none';
+      });
+      var target = document.getElementById('page-' + page);
+      if (target) {
+        target.style.display = 'block';
+      }
+    }
+
+    // Mobile sidebar drawer
+    window.toggleSidebar = function() {
+      var sb = document.getElementById('app-sidebar');
+      if (!sb) return;
+      if (sb.classList.contains('open')) closeSidebar();
+      else openSidebar();
+    };
+    window.openSidebar = function() {
+      var sb = document.getElementById('app-sidebar');
+      var ov = document.getElementById('sidebar-overlay');
+      if (sb) sb.classList.add('open');
+      if (ov) ov.classList.add('show');
+    };
+    window.closeSidebar = function() {
+      var sb = document.getElementById('app-sidebar');
+      var ov = document.getElementById('sidebar-overlay');
+      if (sb) sb.classList.remove('open');
+      if (ov) ov.classList.remove('show');
+    };
+
+    // Public helpers used by sidebar buttons
+    window.goPage = function(page) {
+      showPage(page);
+      setActiveNav(page);
+      // Keep drawer open on Stock so user can pick a sub-menu; close for other pages
+      if (page !== 'stock') closeSidebar();
+      if (page === 'dashboard' && typeof window.loadDashboard === 'function') {
+        setTimeout(function() { window.loadDashboard(); }, 50);
+      }
+      // also call original switchPage if exists (for any side effects)
+      // but avoid bottom-nav errors
+      try {
+        var mainNav = document.getElementById('main-bottom-nav');
+        var stockNav = document.getElementById('stock-bottom-nav');
+        if (mainNav) mainNav.style.display = 'none';
+        if (stockNav) stockNav.style.display = 'none';
+      } catch (e) {}
+    };
+
+    window.goStockSub = function(subpage) {
+      showPage('stock');
+      setActiveNav('stock', subpage);
+      closeSidebar();
+
+      var STOCK_SUBS = ['report', 'inbound', 'outbound', 'materials'];
+
+      // Prefer original switchStockSubpage, then force-correct Materials visibility
+      if (typeof window.switchStockSubpage === 'function') {
+        try { window.switchStockSubpage(subpage); } catch (e) {}
+      }
+
+      STOCK_SUBS.forEach(function(p) {
+        var el = document.getElementById('stock-sub-' + p);
+        if (el) el.style.display = (p === subpage) ? 'block' : 'none';
+        var nav = document.getElementById('nav-stock-' + p);
+        if (nav) {
+          if (p === subpage) nav.classList.add('active');
+          else nav.classList.remove('active');
+        }
+      });
+
+      // Load material master for inbound / materials
+      if (typeof currentUser !== 'undefined' && currentUser && typeof google !== 'undefined') {
+        try {
+          google.script.run
+            .withSuccessHandler(function(data) {
+              if (typeof masterDataList !== 'undefined') masterDataList = data;
+              if (subpage === 'materials' && typeof window.matRenderList === 'function') {
+                window.matRenderList(data || []);
+              }
+            })
+            .withFailureHandler(function() {
+              if (subpage === 'materials' && typeof window.matRenderList === 'function') {
+                window.matRenderList([]);
+              }
+            })
+            .getMaterialMaster(currentUser.site);
+        } catch (e) {}
+      }
+
+      if (subpage === 'materials' && typeof window.matOnShow === 'function') {
+        try { window.matOnShow(); } catch (e) {}
+      }
+    };
+
+    // Override switchPage / enterStockMode / exitStockMode used by old code
+    window.switchPage = function(page) { window.goPage(page); };
+    window.enterStockMode = function() { window.goStockSub('report'); };
+    window.exitStockMode = function() { window.goPage('dashboard'); };
+
+    // ----- Notifications -----
+    var _notifItems = [];
+    var _notifOpen = false;
+
+    window.toggleNotifPanel = function (ev) {
+      if (ev) ev.stopPropagation();
+      var panel = document.getElementById('notif-panel');
+      if (!panel) return;
+      if (_notifOpen) {
+        closeNotifPanel();
+      } else {
+        panel.classList.add('open');
+        _notifOpen = true;
+        loadNotifications(true);
+      }
+    };
+
+    window.closeNotifPanel = function () {
+      var panel = document.getElementById('notif-panel');
+      if (panel) panel.classList.remove('open');
+      _notifOpen = false;
+    };
+
+    function notifSetBadge(n) {
+      var badge = document.getElementById('notif-badge');
+      if (!badge) return;
+      if (n > 0) {
+        badge.textContent = n > 99 ? '99+' : String(n);
+        badge.classList.add('show');
+      } else {
+        badge.classList.remove('show');
+        badge.textContent = '0';
+      }
+    }
+
+    function notifIconClass(type, severity) {
+      if (type === 'low_stock') return 'fa-box';
+      if (type === 'expired') return 'fa-calendar-xmark';
+      if (type === 'expiring') return 'fa-clock';
+      return 'fa-circle-info';
+    }
+
+    function notifRenderList(items) {
+      var el = document.getElementById('notif-list');
+      if (!el) return;
+      if (!items || !items.length) {
+        el.innerHTML = '<div class="notif-empty"><i class="fa-solid fa-check-circle" style="color:var(--success);font-size:22px;display:block;margin-bottom:8px;"></i>All clear — no alerts</div>';
+        return;
+      }
+      var html = '';
+      for (var i = 0; i < items.length; i++) {
+        var it = items[i];
+        var sev = it.severity || 'info';
+        html +=
+          '<div class="notif-item" onclick="notifClickItem(\'' + String(it.action || '').replace(/'/g, '') + '\')">' +
+            '<div class="notif-icon ' + sev + '"><i class="fa-solid ' + notifIconClass(it.type, sev) + '"></i></div>' +
+            '<div class="notif-text">' +
+              '<p class="notif-title">' + String(it.title || '').replace(/</g, '&lt;') + '</p>' +
+              '<p class="notif-msg">' + String(it.message || '').replace(/</g, '&lt;') + '</p>' +
+            '</div>' +
+          '</div>';
+      }
+      el.innerHTML = html;
+    }
+
+    window.loadNotifications = function (showLoading) {
+      if (typeof currentUser === 'undefined' || !currentUser) return;
+      var list = document.getElementById('notif-list');
+      if (showLoading && list && _notifOpen) {
+        list.innerHTML = '<div class="notif-empty"><i class="fa-solid fa-spinner fa-spin"></i> Checking stock alerts...</div>';
+      }
+      try {
+        google.script.run
+          .withSuccessHandler(function (res) {
+            _notifItems = (res && res.items) ? res.items : [];
+            notifSetBadge(res && res.count ? res.count : _notifItems.length);
+            if (_notifOpen) notifRenderList(_notifItems);
+          })
+          .withFailureHandler(function () {
+            if (_notifOpen && list) {
+              list.innerHTML = '<div class="notif-empty">Could not load notifications</div>';
+            }
+          })
+          .getAppNotifications(currentUser.site);
+      } catch (e) {}
+    };
+
+    window.notifClickItem = function (action) {
+      closeNotifPanel();
+      if (typeof window.goStockSub === 'function') {
+        window.goStockSub('report');
+      }
+      setTimeout(function () {
+        if (typeof window.openReportView === 'function') {
+          if (action === 'expired') window.openReportView('expired');
+          else window.openReportView('balance');
+        }
+      }, 120);
+    };
+
+    window.notifOpenReports = function () {
+      closeNotifPanel();
+      if (typeof window.goStockSub === 'function') window.goStockSub('report');
+    };
+
+    // ----- Topbar avatar (image or initial) -----
+    window.updateTopbarAvatar = function() {
+      var box = document.getElementById('topbar-avatar');
+      if (!box || typeof currentUser === 'undefined' || !currentUser) return;
+      var name = (currentUser.givenName || currentUser.username || 'U').trim();
+      var initial = name.charAt(0).toUpperCase();
+      var imgUrl = currentUser.image || '';
+      if (imgUrl && String(imgUrl).trim() !== '') {
+        box.innerHTML = '<img src="' + imgUrl.replace(/"/g, '') + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;">';
+      } else {
+        box.innerHTML = '<span id="topbar-avatar-initial">' + initial + '</span>';
+      }
+    };
+
+    // Show/hide profile action buttons on topbar
+    function setTopbarProfileActions(show) {
+      var editBtn = document.getElementById('topbar-btn-edit');
+      var addBtn = document.getElementById('topbar-btn-adduser');
+      if (editBtn) editBtn.style.display = show ? 'flex' : 'none';
+      if (addBtn) addBtn.style.display = (show && window._isAdminUser) ? 'flex' : 'none';
+    }
+
+    // Patch goPage to toggle topbar profile buttons
+    var _goPageOrig = window.goPage;
+    window.goPage = function(page) {
+      _goPageOrig(page);
+      setTopbarProfileActions(page === 'profile');
+    };
+
+    window.topbarEditProfile = function() {
+      if (typeof window.goPage === 'function') window.goPage('profile');
+      setTimeout(function() {
+        var sec = document.getElementById('edit-profile-section');
+        if (!sec) return;
+        var open = sec.style.display === 'block';
+        sec.style.display = open ? 'none' : 'block';
+        if (typeof updateEditBtnState === 'function') updateEditBtnState();
+        // highlight topbar btn
+        var btn = document.getElementById('topbar-btn-edit');
+        if (btn) btn.classList.toggle('active-action', sec.style.display === 'block');
+      }, 80);
+    };
+
+    window.topbarAddUser = function() {
+      if (typeof window.goPage === 'function') window.goPage('profile');
+      setTimeout(function() {
+        var sec = document.getElementById('create-user-section');
+        if (!sec) return;
+        // ensure manage section visible
+        var ms = document.getElementById('manage-section');
+        if (ms) ms.style.display = 'block';
+        var open = sec.style.display === 'block';
+        sec.style.display = open ? 'none' : 'block';
+        if (typeof updateCreateBtnState === 'function') updateCreateBtnState();
+        var btn = document.getElementById('topbar-btn-adduser');
+        if (btn) btn.classList.toggle('active-action', sec.style.display === 'block');
+      }, 80);
+    };
+
+    // Patch setupAppUI: MUST use display:flex not block
+    function patchSetup() {
+      if (typeof window.setupAppUI !== 'function' || window.setupAppUI._patched) return false;
+      var orig = window.setupAppUI;
+      window.setupAppUI = function() {
+        document.getElementById('login-screen').style.display = 'none';
+        var app = document.getElementById('app-screen');
+        app.style.display = 'flex'; // critical for sidebar layout
+
+        if (typeof updateProfileHeaderDisplay === 'function') updateProfileHeaderDisplay();
+        try {
+          document.getElementById('prof-name').innerText = currentUser.givenName + ' ' + currentUser.familyName;
+          document.getElementById('prof-role').innerText = 'Role: ' + currentUser.role.toUpperCase();
+          document.getElementById('prof-site').innerText = 'Site: ' + currentUser.site;
+        } catch (e) {}
+
+        if (currentUser.role === 'superadmin' || currentUser.role === 'admin') {
+          var ms = document.getElementById('manage-section');
+          if (ms) ms.style.display = 'block';
+          if (typeof setupManagementForm === 'function') setupManagementForm();
+          if (typeof loadManagedUsers === 'function') loadManagedUsers();
+        } else {
+          var ms2 = document.getElementById('manage-section');
+          if (ms2) ms2.style.display = 'none';
+        }
+
+        var fullName = ((currentUser.givenName || '') + ' ' + (currentUser.familyName || '')).trim() || currentUser.username || 'User';
+        var nameEl = document.getElementById('topbar-username');
+        if (nameEl) nameEl.textContent = fullName;
+
+        var sideName = document.getElementById('sidebar-username');
+        var sideMeta = document.getElementById('sidebar-usermeta');
+        if (sideName) sideName.textContent = fullName;
+        if (sideMeta) {
+          sideMeta.innerHTML =
+            'Role: ' + (currentUser.role || '—').toUpperCase() + '<br>' +
+            'Site: ' + (currentUser.site || '—');
+        }
+
+        // Topbar avatar: real image or first letter
+        updateTopbarAvatar();
+
+        // Show Add User topbar btn only for admin roles
+        window._isAdminUser = (currentUser.role === 'superadmin' || currentUser.role === 'admin');
+
+        window.goPage('dashboard');
+
+        // Load notification badge after login
+        setTimeout(function () { loadNotifications(false); }, 400);
+        if (!window._notifTimer) {
+          window._notifTimer = setInterval(function () { loadNotifications(false); }, 5 * 60 * 1000);
+        }
+      };
+      window.setupAppUI._patched = true;
+      return true;
+    }
+
+    var tries = 0;
+    var t = setInterval(function() {
+      tries++;
+      if (patchSetup() || tries > 50) clearInterval(t);
+    }, 100);
+  })();
   </script>
 </body>
 </html>
