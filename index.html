@@ -96,6 +96,45 @@
       word-break: break-all;
     }
 
+    /* SweetAlert — match Apps Script theme */
+    .swal2-popup-gh {
+      background: #fff !important;
+      border-radius: 16px !important;
+      box-shadow: 0 4px 16px rgba(10,77,140,.12) !important;
+      font-family: 'Segoe UI', system-ui, sans-serif !important;
+      color: #1A2B3C !important;
+      padding: 24px !important;
+    }
+    .swal2-title-gh {
+      font-weight: 700 !important;
+      color: #1A2B3C !important;
+      font-size: 18px !important;
+    }
+    .swal2-html-gh {
+      font-size: 14px !important;
+      color: #6B7C8F !important;
+      line-height: 1.5 !important;
+    }
+    .swal2-confirm-gh {
+      border: none !important;
+      border-radius: 8px !important;
+      font-weight: 600 !important;
+      padding: 10px 22px !important;
+      font-size: 13px !important;
+      background: #0A4D8C !important;
+      color: #fff !important;
+      box-shadow: none !important;
+    }
+    .swal2-cancel-gh {
+      border: 1px solid #C0CDD8 !important;
+      border-radius: 8px !important;
+      font-weight: 600 !important;
+      padding: 10px 22px !important;
+      font-size: 13px !important;
+      background: #fff !important;
+      color: #1A2B3C !important;
+    }
+
     /* App shell */
     #app-screen { display: none; flex-direction: row; background: var(--light); padding: 12px; gap: 12px; }
     .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(15,30,50,.45); z-index: 90; }
@@ -642,14 +681,24 @@ function api(action, payload) {
   });
 }
 
+var swalConfig = {
+  buttonsStyling: false,
+  customClass: {
+    popup: 'swal2-popup-gh',
+    title: 'swal2-title-gh',
+    htmlContainer: 'swal2-html-gh',
+    confirmButton: 'swal2-confirm-gh',
+    cancelButton: 'swal2-cancel-gh'
+  }
+};
+
 function toast(icon, title, text) {
-  return Swal.fire({
+  return Swal.fire(Object.assign({}, swalConfig, {
     icon: icon || 'info',
     title: title || '',
     text: text || '',
-    confirmButtonText: 'OK',
-    confirmButtonColor: '#0A4D8C'
-  });
+    confirmButtonText: 'OK'
+  }));
 }
 
 /* ============================================================
@@ -664,14 +713,26 @@ api('ping', {}).then(function (r) {
 
 var saved = localStorage.getItem('es_user_id');
 if (saved) {
+  Swal.fire(Object.assign({}, swalConfig, {
+    title: 'Restoring Session...',
+    html: 'Please wait while we establish database connection.',
+    allowOutsideClick: false,
+    showConfirmButton: false,
+    didOpen: function () { Swal.showLoading(); }
+  }));
   api('validateSession', { userId: saved }).then(function (res) {
     if (res && res.success) {
       currentUser = res.user;
+      Swal.close();
       enterApp();
     } else {
       localStorage.removeItem('es_user_id');
+      Swal.close();
     }
-  }).catch(function () {});
+  }).catch(function () {
+    localStorage.removeItem('es_user_id');
+    Swal.close();
+  });
 }
 
 document.getElementById('login-pwd').addEventListener('keydown', function (e) {
@@ -684,20 +745,36 @@ document.getElementById('login-pwd').addEventListener('keydown', function (e) {
 function doLogin() {
   var usr = document.getElementById('login-usr').value.trim();
   var pwd = document.getElementById('login-pwd').value;
-  if (!usr || !pwd) return toast('warning', 'Missing data', 'Enter username and password.');
+  if (!usr || !pwd) {
+    return toast('warning', 'Wait, there is an issue!', 'Please enter both Username and Password.');
+  }
 
-  Swal.fire({ title: 'Logging in...', allowOutsideClick: false, showConfirmButton: false, didOpen: function () { Swal.showLoading(); } });
+  Swal.fire(Object.assign({}, swalConfig, {
+    title: 'Logging in...',
+    html: 'Authenticating your warehouse credentials.',
+    allowOutsideClick: false,
+    showConfirmButton: false,
+    didOpen: function () { Swal.showLoading(); }
+  }));
+
   api('login', { username: usr, password: pwd }).then(function (res) {
     if (res && res.success) {
       currentUser = res.user;
       localStorage.setItem('es_user_id', currentUser.id);
-      Swal.close();
-      enterApp();
+      Swal.fire(Object.assign({}, swalConfig, {
+        icon: 'success',
+        title: 'Success!',
+        text: 'Welcome back, ' + (currentUser.givenName || currentUser.username || '') + '!',
+        timer: 1500,
+        showConfirmButton: false
+      })).then(function () {
+        enterApp();
+      });
     } else {
-      toast('error', 'Login failed', (res && res.message) || 'Invalid credentials');
+      toast('error', 'Wait, there is an issue!', (res && res.message) || 'Invalid Username or Password!');
     }
   }).catch(function (err) {
-    toast('error', 'Error', err.message);
+    toast('error', 'Wait, there is an issue!', 'Error executing secure sign-in login sequence: ' + err.message);
   });
 }
 
