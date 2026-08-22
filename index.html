@@ -22,16 +22,79 @@
       background: var(--light); color: var(--dark); -webkit-tap-highlight-color: transparent; }
     .screen { width: 100vw; height: 100vh; overflow: hidden; position: relative; }
 
-    /* Login */
-    #login-screen { display: flex; align-items: center; justify-content: center; background: linear-gradient(145deg, #0A4D8C 0%, #1A6BB5 50%, #00A0E3 100%); }
-    .login-box { background: #fff; width: 90%; max-width: 380px; padding: 32px 28px; border-radius: 16px; box-shadow: var(--shadow-md); text-align: center; }
-    .login-box h1 { margin: 0 0 6px; font-size: 22px; color: var(--primary); }
-    .login-box .sub { font-size: 12px; color: var(--muted); margin-bottom: 22px; }
-    .login-box input { width: 100%; padding: 12px 14px; margin-bottom: 12px; border: 1px solid var(--border-dark); border-radius: 8px; font-size: 14px; outline: none; }
-    .login-box input:focus { border-color: var(--primary-mid); box-shadow: 0 0 0 3px rgba(26,107,181,.15); }
-    .login-box button { width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
-    .login-box button:active { background: var(--primary-hover); }
-    .api-hint { margin-top: 14px; font-size: 11px; color: #94A3B8; word-break: break-all; }
+    /* Login — Energy Core (same as Apps Script) */
+    #login-screen {
+      display: flex; align-items: center; justify-content: center;
+      background: #02040a !important;
+      position: relative; overflow: hidden;
+    }
+    #energy-canvas {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      display: block; z-index: 1; cursor: pointer;
+    }
+    .core-hint, .core-label {
+      position: absolute; left: 50%; transform: translateX(-50%);
+      z-index: 2; pointer-events: none;
+      letter-spacing: 3px; text-transform: uppercase;
+      transition: opacity 0.4s ease;
+    }
+    .core-hint {
+      bottom: 72px; color: rgba(0, 220, 255, 0.4); font-size: 10px;
+    }
+    .core-label {
+      bottom: 40px; color: rgba(0, 220, 255, 0.55); font-size: 11px;
+      text-shadow: 0 0 12px rgba(0, 200, 255, 0.35);
+    }
+    .core-label strong { color: rgba(0, 255, 220, 0.9); font-weight: 500; }
+
+    .login-box {
+      position: relative; z-index: 5;
+      background: #fff; width: 90%; max-width: 380px;
+      padding: 32px 28px 28px; border-radius: 16px;
+      box-shadow: var(--shadow-md); text-align: center;
+      transform: scale(0.12); opacity: 0; pointer-events: none;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease;
+    }
+    #login-screen.form-open .login-box {
+      transform: scale(1); opacity: 1; pointer-events: auto;
+    }
+    #login-screen.form-open #energy-canvas {
+      filter: brightness(0.4) blur(2px); transition: filter 0.5s ease;
+    }
+    #login-screen:not(.form-open) #energy-canvas {
+      filter: none; transition: filter 0.5s ease;
+    }
+    #login-screen.form-open .core-hint,
+    #login-screen.form-open .core-label { opacity: 0; }
+
+    .login-box h1 { margin: 0 0 18px; font-size: 22px; color: var(--primary); }
+    .login-box input {
+      width: 100%; padding: 12px 14px; margin-bottom: 12px;
+      border: 1px solid var(--border-dark); border-radius: 8px;
+      font-size: 14px; outline: none;
+    }
+    .login-box input:focus {
+      border-color: var(--primary-mid);
+      box-shadow: 0 0 0 3px rgba(26,107,181,.15);
+    }
+    .login-box button#btn-login {
+      width: 100%; padding: 12px; background: var(--primary); color: #fff;
+      border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer;
+    }
+    .login-box button#btn-login:active { background: var(--primary-hover); }
+    .login-close-btn {
+      position: absolute; top: 12px; right: 14px;
+      width: 30px; height: 30px; padding: 0; margin: 0;
+      border: 1px solid #CBD5E1; border-radius: 50%;
+      background: #fff; color: #64748B; font-size: 16px; font-weight: bold;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      z-index: 10;
+    }
+    .login-close-btn:hover { background: #FDECEE; color: #DC3545; }
+    .api-hint {
+      margin-top: 12px; font-size: 11px; color: #94A3B8;
+      word-break: break-all;
+    }
 
     /* App shell */
     #app-screen { display: none; flex-direction: row; background: var(--light); padding: 12px; gap: 12px; }
@@ -117,12 +180,16 @@
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- LOGIN — Energy Core -->
 <div id="login-screen" class="screen">
+  <canvas id="energy-canvas"></canvas>
+  <div class="core-hint">CLICK TO ACCESS</div>
+  <div class="core-label">EASY STOCK PRO · <strong>ACTIVE</strong></div>
+
   <div class="login-box">
+    <button type="button" class="login-close-btn" id="login-close-btn" title="Close">×</button>
     <div style="font-size:40px;color:var(--primary);margin-bottom:8px;"><i class="fa-solid fa-boxes-stacked"></i></div>
     <h1>Easy Stock PRO</h1>
-    <div class="sub">GitHub shell · connected to Apps Script</div>
     <input type="text" id="login-usr" placeholder="Username" autocomplete="username">
     <input type="password" id="login-pwd" placeholder="Password" autocomplete="current-password">
     <button type="button" id="btn-login" onclick="doLogin()"><i class="fa-solid fa-right-to-bracket"></i> Login</button>
@@ -297,6 +364,230 @@
 
 <script>
 /* ============================================================
+   ENERGY CORE animation + login form toggle
+   ============================================================ */
+(function () {
+  var canvas = document.getElementById('energy-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W, H, CX, CY, baseScale, time = 0;
+  var formOpen = false;
+  var loginScreen = document.getElementById('login-screen');
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    CX = W / 2; CY = H / 2;
+    baseScale = Math.min(W, H) * 0.22;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function project(x, y, z) {
+    var fov = 380, pz = z + fov;
+    if (pz < 8) pz = 8;
+    var f = fov / pz;
+    return { x: CX + x * f, y: CY + y * f, s: Math.max(0.08, f) };
+  }
+
+  function drawCore(scale, breath) {
+    var r = scale * (0.85 + breath * 0.06);
+    for (var i = 5; i >= 0; i--) {
+      var gr = r * (1.8 + i * 0.35);
+      var g = ctx.createRadialGradient(CX, CY, r * 0.3, CX, CY, gr);
+      g.addColorStop(0, 'rgba(0,180,255,' + (0.04 + (5 - i) * 0.015) + ')');
+      g.addColorStop(0.5, 'rgba(0,100,220,' + (0.02 + (5 - i) * 0.008) + ')');
+      g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.beginPath(); ctx.arc(CX, CY, gr, 0, Math.PI * 2);
+      ctx.fillStyle = g; ctx.fill();
+    }
+    var body = ctx.createRadialGradient(CX - r * 0.2, CY - r * 0.25, r * 0.05, CX, CY, r);
+    body.addColorStop(0, 'rgba(200,255,255,0.98)');
+    body.addColorStop(0.2, 'rgba(0,230,255,0.9)');
+    body.addColorStop(0.45, 'rgba(0,140,255,0.65)');
+    body.addColorStop(0.75, 'rgba(0,60,180,0.3)');
+    body.addColorStop(1, 'rgba(0,20,60,0.05)');
+    ctx.beginPath(); ctx.arc(CX, CY, r, 0, Math.PI * 2);
+    ctx.fillStyle = body; ctx.fill();
+
+    var core = ctx.createRadialGradient(CX, CY, 0, CX, CY, r * 0.4);
+    core.addColorStop(0, 'rgba(255,255,255,0.95)');
+    core.addColorStop(0.35, 'rgba(150,255,255,0.7)');
+    core.addColorStop(1, 'rgba(0,180,255,0)');
+    ctx.beginPath(); ctx.arc(CX, CY, r * 0.4, 0, Math.PI * 2);
+    ctx.fillStyle = core; ctx.fill();
+
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    var band = ctx.createLinearGradient(CX - r * 1.4, CY, CX + r * 1.4, CY);
+    band.addColorStop(0, 'rgba(0,180,255,0)');
+    band.addColorStop(0.3, 'rgba(80,220,255,0.25)');
+    band.addColorStop(0.5, 'rgba(180,255,255,0.45)');
+    band.addColorStop(0.7, 'rgba(80,220,255,0.25)');
+    band.addColorStop(1, 'rgba(0,180,255,0)');
+    ctx.fillStyle = band;
+    ctx.fillRect(CX - r * 1.4, CY - r * 0.07, r * 2.8, r * 0.14);
+    ctx.restore();
+  }
+
+  function GyroRing(radius, axis, speed, thickness, hue, nodes) {
+    this.radius = radius; this.axis = axis; this.speed = speed;
+    this.thickness = thickness; this.hue = hue; this.nodes = nodes || 16;
+    this.angle = Math.random() * Math.PI * 2;
+    this.lightPos = Math.random();
+    this.lightSpeed = 0.28 + Math.random() * 0.4;
+  }
+  GyroRing.prototype.update = function (dt) {
+    this.angle += this.speed * dt;
+    this.lightPos = (this.lightPos + this.lightSpeed * dt) % 1;
+  };
+  GyroRing.prototype.draw = function (scale, breath) {
+    var r = this.radius * scale * (1 + breath * 0.02);
+    var pts = [], segs = 64, i, a, x, y, z, c, s, tilt, ty, tz;
+    for (i = 0; i <= segs; i++) {
+      a = (i / segs) * Math.PI * 2;
+      if (this.axis === 'y') {
+        x = Math.cos(a) * r; y = 0; z = Math.sin(a) * r;
+        c = Math.cos(this.angle); s = Math.sin(this.angle);
+        var nx = x * c - z * s; z = x * s + z * c; x = nx;
+      } else if (this.axis === 'x') {
+        x = 0; y = Math.cos(a) * r; z = Math.sin(a) * r;
+        c = Math.cos(this.angle); s = Math.sin(this.angle);
+        var ny = y * c - z * s; z = y * s + z * c; y = ny;
+      } else {
+        x = Math.cos(a + this.angle) * r;
+        y = Math.sin(a + this.angle) * r; z = 0;
+      }
+      tilt = Math.sin(time * 0.25 + this.radius) * 0.09;
+      ty = y * Math.cos(tilt) - z * Math.sin(tilt);
+      tz = y * Math.sin(tilt) + z * Math.cos(tilt);
+      pts.push(project(x, ty, tz));
+    }
+    ctx.beginPath();
+    pts.forEach(function (p, idx) { idx === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y); });
+    ctx.closePath();
+    ctx.strokeStyle = 'hsla(' + this.hue + ',90%,65%,0.22)';
+    ctx.lineWidth = this.thickness * 0.7;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    for (var n = 0; n < this.nodes; n++) {
+      var idx = Math.floor((n / this.nodes) * segs);
+      var p = pts[idx];
+      var pulse = 0.7 + Math.sin(time * 2.5 + n * 0.8) * 0.3;
+      var size = Math.max(0.8, 1.6 * pulse * p.s);
+      ctx.beginPath(); ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+      ctx.fillStyle = 'hsla(' + (this.hue + 15) + ',100%,75%,0.85)';
+      ctx.shadowColor = 'hsla(' + this.hue + ',100%,70%,0.7)';
+      ctx.shadowBlur = 8; ctx.fill();
+    }
+    ctx.shadowBlur = 0;
+    var lightIdx = Math.floor(this.lightPos * segs);
+    for (var t = 0; t < 12; t++) {
+      var li = (lightIdx - t + segs) % segs;
+      var lp = pts[li];
+      var intensity = 1 - t / 12;
+      var sz = Math.max(0.6, (1.2 + intensity * 2.8) * lp.s);
+      ctx.beginPath(); ctx.arc(lp.x, lp.y, sz, 0, Math.PI * 2);
+      ctx.fillStyle = 'hsla(' + (this.hue + intensity * 30) + ',100%,' + (55 + intensity * 30) + '%,' + (0.15 + intensity * 0.8) + ')';
+      ctx.shadowColor = 'hsla(' + this.hue + ',100%,70%,' + (intensity * 0.85) + ')';
+      ctx.shadowBlur = 6 + intensity * 12; ctx.fill();
+    }
+    ctx.shadowBlur = 0;
+  };
+
+  var rings = [
+    new GyroRing(1.15, 'y', 0.48, 2.2, 175, 20),
+    new GyroRing(1.55, 'y', -0.32, 1.8, 195, 16),
+    new GyroRing(1.15, 'x', 0.38, 2.1, 210, 18),
+    new GyroRing(1.55, 'x', -0.42, 1.7, 165, 14),
+    new GyroRing(1.15, 'z', 0.55, 2.0, 185, 16),
+    new GyroRing(1.65, 'z', -0.28, 1.6, 220, 12)
+  ];
+
+  function Particle() { this.reset(true); }
+  Particle.prototype.reset = function (init) {
+    this.theta = Math.random() * Math.PI * 2;
+    this.phi = Math.acos(2 * Math.random() - 1);
+    this.r = 1.7 + Math.random() * 1.6;
+    this.speed = 0.15 + Math.random() * 0.45;
+    this.size = 0.9 + Math.random() * 2.0;
+    this.life = init ? Math.random() * 6 : 0;
+    this.maxLife = 5 + Math.random() * 7;
+    this.hue = 155 + Math.random() * 80;
+  };
+  Particle.prototype.update = function (dt) {
+    this.theta += this.speed * dt * 0.35;
+    this.life += dt;
+    if (this.life > this.maxLife) this.reset();
+  };
+  Particle.prototype.draw = function (scale) {
+    var alpha = this.life < 0.6 ? this.life / 0.6 :
+                this.life > this.maxLife - 0.9 ? (this.maxLife - this.life) / 0.9 : 1;
+    var x = Math.sin(this.phi) * Math.cos(this.theta) * this.r * scale;
+    var y = Math.cos(this.phi) * this.r * scale * 0.55;
+    var z = Math.sin(this.phi) * Math.sin(this.theta) * this.r * scale;
+    var p = project(x, y, z);
+    var r = Math.max(0.5, this.size * p.s);
+    ctx.globalAlpha = alpha * 0.65;
+    ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+    ctx.fillStyle = 'hsla(' + this.hue + ',100%,75%,1)';
+    ctx.shadowColor = 'hsla(' + this.hue + ',100%,70%,0.7)';
+    ctx.shadowBlur = 8; ctx.fill();
+    ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+  };
+  var particles = [];
+  for (var pi = 0; pi < 40; pi++) particles.push(new Particle());
+
+  function toggleForm() {
+    formOpen = !formOpen;
+    if (formOpen) {
+      loginScreen.classList.add('form-open');
+      setTimeout(function () {
+        var u = document.getElementById('login-usr');
+        if (u) u.focus();
+      }, 300);
+    } else {
+      loginScreen.classList.remove('form-open');
+    }
+  }
+
+  canvas.addEventListener('click', toggleForm);
+  var closeBtn = document.getElementById('login-close-btn');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (formOpen) toggleForm();
+    });
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && formOpen) toggleForm();
+  });
+
+  var last = performance.now();
+  function frame(now) {
+    if (loginScreen.style.display === 'none') {
+      requestAnimationFrame(frame);
+      return;
+    }
+    var dt = Math.min((now - last) / 1000, 0.05);
+    last = now; time += dt;
+    var breath = Math.sin(time * 0.9) * 0.5 + 0.5;
+    var scale = baseScale;
+    ctx.clearRect(0, 0, W, H);
+    var bg = ctx.createRadialGradient(CX, CY, 0, CX, CY, Math.max(W, H) * 0.7);
+    bg.addColorStop(0, 'rgba(0,20,45,0.2)');
+    bg.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+    particles.forEach(function (p) { p.update(dt); p.draw(scale); });
+    rings.forEach(function (r) { r.update(dt); r.draw(scale, breath); });
+    drawCore(scale, breath);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+/* ============================================================
    CONFIG — paste your Apps Script /exec URL here
    ============================================================ */
 var API_URL = 'https://script.google.com/macros/s/AKfycby9Anktz_Ma2fxypY0hY_07XVqHIQ8AhcNama_HBXvIF6CYTRzFx5R9CJLpEiyLaqwT/exec';
@@ -414,7 +705,9 @@ function doLogout() {
   currentUser = null;
   localStorage.removeItem('es_user_id');
   document.getElementById('app-screen').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
+  var ls = document.getElementById('login-screen');
+  ls.style.display = 'flex';
+  ls.classList.remove('form-open');
   document.getElementById('login-pwd').value = '';
   closeQR();
 }
